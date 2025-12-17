@@ -48,15 +48,6 @@
                     Schema 生成器
                 </a>
             </el-menu-item>
-            <el-menu-item index="5">
-                <a
-                    :class="$style.menuLink"
-                    href="https://github.com/lljj-x/vue-json-schema-form"
-                    target="_blank"
-                >
-                    Github
-                </a>
-            </el-menu-item>
         </el-menu>
     </div>
 </template>
