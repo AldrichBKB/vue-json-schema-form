@@ -8,7 +8,7 @@
 export default {
     name: 'Demo',
     mounted() {
-        window.location.href = '/vue-editor.html#/editor';
+        window.location.href = '/schema-generator.html#/index';
     }
 };
 </script>

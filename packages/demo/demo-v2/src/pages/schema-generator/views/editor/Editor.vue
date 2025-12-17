@@ -1,28 +1,5 @@
 <template>
     <div v-loading="loading">
-        <EditorHeader default-active="4">
-            <el-button @click="handleImportSchema">导入Schema</el-button>
-            <el-button
-                plain
-                @click="handleToDemo"
-            >
-                Playground中验证
-            </el-button>
-            <el-button
-                type="primary"
-                plain
-                @click="handlePreview"
-            >
-                预览展示
-            </el-button>
-            <el-button
-                type="primary"
-                @click="handleExportSchema"
-            >
-                导出Schema
-            </el-button>
-        </EditorHeader>
-
         <div :class="[$style.container]">
             <div
                 :class="{
@@ -139,14 +116,9 @@
 
 <script>
 import VueJsonFrom from '@lljj/vue-json-schema-form';
-import componentWithDialog from 'demo-common/components/component-with-dialog';
-import { openNewPage } from 'demo-common/utils/url.js';
 
-import EditorHeader from 'demo-common/components/EditorHeader.vue';
 import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
-import ExportSchemaView from './components/ExportSchemaView.vue';
-import ImportSchemaView from './components/ImportSchemaView.vue';
 
 
 import { deepFreeze } from './common/utils';
@@ -154,8 +126,7 @@ import { deepFreeze } from './common/utils';
 import configTools from './config/tools';
 
 import NestedEditor from './components/NestedEditor';
-import { componentList2JsonSchema, formatFormLabelWidth } from './common/editorData';
-import jsonSchema2ComponentList from './common/jsonSchema2ComponentList';
+import { formatFormLabelWidth } from './common/editorData';
 
 deepFreeze(configTools);
 
@@ -164,7 +135,6 @@ export default {
     components: {
         VueJsonFrom,
         EditorToolBar,
-        EditorHeader,
         NestedEditor
     },
     provide() {
@@ -227,134 +197,6 @@ export default {
         });
     },
     methods: {
-        getExportCode() {
-            const { formFooter, formProps } = this;
-            const defaultConfig = {
-                formFooter: {
-                    show: true,
-                    okBtn: '保存',
-                    cancelBtn: '取消'
-                },
-                formProps: {
-                    inline: false,
-                    inlineFooter: false,
-                    layoutColumn: 1,
-                    labelPosition: 'top',
-                }
-            };
-
-            // 不做深度
-            const filter = (obj, defaultObj) => Object.keys(obj).reduce((pre, cur) => {
-                if (!(obj[cur] === defaultObj[cur])) {
-                    pre[cur] = obj[cur];
-                }
-                return pre;
-            }, {});
-
-            return {
-                schema: componentList2JsonSchema(this.componentList),
-                uiSchema: {},
-                formFooter: filter(formFooter, defaultConfig.formFooter),
-                formProps: filter(formProps, defaultConfig.formProps)
-            };
-        },
-        handlePreview() {
-            const props = this.getExportCode();
-            const instance = componentWithDialog({
-                VueComponent: VueJsonFrom,
-                dialogProps: {
-                    title: '预览展示',
-                    width: '1000px'
-                },
-                componentProps: {
-                    value: {},
-                    ...props
-                },
-                componentListeners: {
-                    toDemo: () => {
-                        this.handleToDemo();
-                    },
-                    'on-cancel': () => {
-                        instance.close();
-                    },
-                    'on-submit': (data) => {
-                        // eslint-disable-next-line no-alert
-                        alert(JSON.stringify(data, null, 2));
-                    }
-                }
-            });
-        },
-        handleImportSchema() {
-            const instance = componentWithDialog({
-                VueComponent: ImportSchemaView,
-                dialogProps: {
-                    title: '导入Schema',
-                    width: '1000px'
-                },
-                componentListeners: {
-                    onImport: (code) => {
-                        try {
-                            const data = jsonSchema2ComponentList(code, this.configTools);
-                            if (!data) return this.$message.warning('请先输入导入Schema');
-
-                            const { errorNode, componentList, formConfig } = data;
-                            this.componentList = componentList;
-                            if (formConfig.formProps) Object.assign(this.formConfig.formProps, formConfig.formProps);
-                            if (formConfig.formFooter) Object.assign(this.formConfig.formFooter, formConfig.formFooter);
-
-                            instance.close();
-
-                            // 存在导入失败的部分节点
-                            if (errorNode.length > 0 && Array.isArray(errorNode)) {
-                                return this.$msgbox({
-                                    title: '如下节点导入失败，请检查数据',
-                                    message: this.$createElement(
-                                        'div', {
-                                            style: {
-                                                padding: '10px 0'
-                                            }
-                                        },
-                                        errorNode.map(item => this.$createElement('pre', null, JSON.stringify(item, null, 4)))
-                                    )
-                                });
-                            }
-
-                            return undefined;
-                        } catch (e) {
-                            this.$alert(e.message, '导入失败，详细查看控制台');
-                            throw e;
-                        }
-                    }
-                }
-            });
-        },
-        handleExportSchema() {
-            componentWithDialog({
-                VueComponent: ExportSchemaView,
-                dialogProps: {
-                    title: '导出Schema',
-                    width: '1000px'
-                },
-                componentProps: {
-                    genCode: this.getExportCode(),
-                },
-                componentListeners: {
-                    toDemo: () => {
-                        this.handleToDemo();
-                    }
-                }
-            });
-        },
-        handleToDemo() {
-            const codeObj = this.getExportCode();
-            const urlQueryString = Object.keys(codeObj).reduce((pre, cur) => {
-                pre.push(`${cur}=${encodeURIComponent(JSON.stringify(codeObj[cur]))}`);
-                return pre;
-            }, []).join('&');
-
-            const link = `/index.html#/demo?type=Test&${urlQueryString}`;
-            openNewPage(link, '_specialViewForm');
-        }
     }
 };
 </script>
