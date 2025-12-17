@@ -215,7 +215,6 @@ export default {
 <style module>
     @import 'demo-common/css/variable.css';
     :root {
-        --site-top-height: 80px;
         --tool-bar-width: 260px;
         --right-form-width: 380px;
         --drag-area-width: auto;
@@ -224,7 +223,7 @@ export default {
     .container {
         position: relative;
         box-sizing: border-box;
-        height: calc(100vh - var(--site-top-height));
+        height: calc(100vh );
         transition: 0.2s ease;
     }
     .hasTools {
