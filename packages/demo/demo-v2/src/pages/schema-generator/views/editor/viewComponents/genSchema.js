@@ -2,7 +2,7 @@
  * Created by Liu.Jun on 2020/10/26 18:24.
  */
 
-import { formatFormLabelWidth } from '../common/editorData';
+// import { formatFormLabelWidth } from '../common/editorData';
 
 function genBaseVal(type = 'string', isMultiSelect = false) {
     return {
@@ -63,16 +63,16 @@ function genBaseVal(type = 'string', isMultiSelect = false) {
                             description: '请输入style width 支持的格式，<br />比如<strong style="font-weight: bold;">10%、100px</strong>等，推荐百分比单位',
                             'ui:placeholder': '请输入FormItem宽度'
                         },
-                        labelWidth: {
-                            title: '标签宽度',
-                            type: 'number',
-                            'ui:widget': 'ElSlider',
-                            'ui:options': {
-                                formatTooltip(val) {
-                                    return formatFormLabelWidth(val);
-                                }
-                            }
-                        },
+                        // labelWidth: {
+                        //     title: '标签宽度',
+                        //     type: 'number',
+                        //     'ui:widget': 'ElSlider',
+                        //     'ui:options': {
+                        //         formatTooltip(val) {
+                        //             return formatFormLabelWidth(val);
+                        //         }
+                        //     }
+                        // },
                         required: {
                             title: '必填',
                             type: 'boolean',

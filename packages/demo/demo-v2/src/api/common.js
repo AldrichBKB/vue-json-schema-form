@@ -67,7 +67,7 @@ axios.interceptors.response.use(
     }
 );
 
-export function getColumnPage(data) {
+export function getColumnPageHttp(data) {
     return axios({
         url: '/platform-manage-flow-api/api/form/setting/column/page',
         data,

@@ -46,6 +46,7 @@
                         :model="rootFormData"
                         v-bind="formProps"
                         class="genFromComponent"
+                        label-width="auto"
                         :class="{
                             layoutColumn: !formProps.inline,
                             [`layoutColumn-${formProps.layoutColumn}`]: !formProps.inline,
@@ -54,6 +55,7 @@
                             // [`genFromComponent_${schema.id}Form`]: !!schema.id,
                         }"
                     >
+                        {{ componentList }}
                         <NestedEditor
                             :child-component-list="componentList"
                             :drag-options="dragOptions"
@@ -144,7 +146,7 @@
 import VueJsonFrom from '@lljj/vue-json-schema-form';
 
 import componentWithDialog from 'demo-common/components/component-with-dialog';
-import { getColumnPage } from '@/api/common';
+import { getColumnPageHttp } from '@/api/common';
 
 import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
@@ -216,13 +218,8 @@ export default {
             };
         }
     },
-    async  mounted() {
-        await getColumnPage({
-            formCode:
-                'FORM_WORK_ORDER_ADD',
-            pageDto:
-                { page: 1, pageSize: 50 }
-        });
+
+    mounted() {
         window.document.body.classList.add('page-decorate-design');
     },
     destroyed() {
@@ -233,8 +230,18 @@ export default {
             this.activeName = editorItem ? 'compConfig' : 'formConfig';
             this.curEditorItem = editorItem;
         });
+        this.getColumnPage();
     },
+
     methods: {
+        async getColumnPage() {
+            console.log(123);
+
+            await getColumnPageHttp({
+                formCode: 'FORM_WORK_ORDER_ADD',
+                pageDto: { page: 1, pageSize: 999 }
+            });
+        },
         handleExportSchema() {
             componentWithDialog({
                 VueComponent: ExportSchemaView,
