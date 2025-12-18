@@ -1,5 +1,19 @@
 <template>
     <div v-loading="loading">
+        <div
+            :style="{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                padding: '10px'
+            }"
+        >
+            <el-button
+                type="primary"
+                @click="handleExportSchema"
+            >
+                导出Schema
+            </el-button>
+        </div>
         <div :class="[$style.container]">
             <div
                 :class="{
@@ -12,7 +26,9 @@
                         <EditorToolBar
                             :drag-group="dragOptions.group"
                             :config-tools="configTools"
-                            @onFilter="$message.error('该组件添加数目已达上限！')"
+                            @onFilter="
+                                $message.error('该组件添加数目已达上限！')
+                            "
                         >
                         </EditorToolBar>
                     </div>
@@ -34,7 +50,7 @@
                             layoutColumn: !formProps.inline,
                             [`layoutColumn-${formProps.layoutColumn}`]: !formProps.inline,
                             formInlineFooter: formProps.inlineFooter,
-                            formInline: formProps.inline,
+                            formInline: formProps.inline
                             // [`genFromComponent_${schema.id}Form`]: !!schema.id,
                         }"
                     >
@@ -45,13 +61,21 @@
                             :form-props="formProps"
                         >
                             <el-form-item
-                                v-if="componentList.length > 0 && formFooter.show"
+                                v-if="
+                                    componentList.length > 0 && formFooter.show
+                                "
                                 :style="{
-                                    display: formProps.inline && formProps.inlineFooter ? 'inline-block' : 'block'
+                                    display:
+                                        formProps.inline &&
+                                        formProps.inlineFooter
+                                            ? 'inline-block'
+                                            : 'block'
                                 }"
                                 class="formFooter_item w100 formFooter_item-editor"
                             >
-                                <el-button @click="$emit('onCancel')">{{ formFooter.cancelBtn }}</el-button>
+                                <el-button @click="$emit('onCancel')">
+                                    {{ formFooter.cancelBtn }}
+                                </el-button>
                                 <el-button
                                     type="primary"
                                     @click="$emit('onSubmit')"
@@ -78,7 +102,9 @@
                             <VueJsonFrom
                                 v-model="curEditorItem.componentValue"
                                 :class="$style.configForm"
-                                :schema="curEditorItem.componentPack.propsSchema"
+                                :schema="
+                                    curEditorItem.componentPack.propsSchema
+                                "
                                 :form-props="{
                                     labelPosition: 'right',
                                     labelWidth: '110px'
@@ -117,16 +143,20 @@
 <script>
 import VueJsonFrom from '@lljj/vue-json-schema-form';
 
+import componentWithDialog from 'demo-common/components/component-with-dialog';
 import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
-
+import ExportSchemaView from './components/ExportSchemaView .vue';
 
 import { deepFreeze } from './common/utils';
 
 import configTools from './config/tools';
 
 import NestedEditor from './components/NestedEditor';
-import { formatFormLabelWidth } from './common/editorData';
+import {
+    formatFormLabelWidth,
+    componentList2JsonSchema
+} from './common/editorData';
 
 deepFreeze(configTools);
 
@@ -163,7 +193,9 @@ export default {
             if (!this.formConfig.formProps) return {};
             return {
                 ...this.formConfig.formProps,
-                labelWidth: formatFormLabelWidth(this.formConfig.formProps.labelWidth)
+                labelWidth: formatFormLabelWidth(
+                    this.formConfig.formProps.labelWidth
+                )
             };
         },
         formFooter() {
@@ -178,11 +210,11 @@ export default {
                 filter: this.$style.disabled,
                 draggable: '.draggableItem',
                 tag: 'div',
-                swapThreshold: 0.3,
+                swapThreshold: 0.3
                 // forceFallback: true
                 // fallbackTolerance: 0
             };
-        },
+        }
     },
     mounted() {
         window.document.body.classList.add('page-decorate-design');
@@ -197,153 +229,203 @@ export default {
         });
     },
     methods: {
+        handleExportSchema() {
+            componentWithDialog({
+                VueComponent: ExportSchemaView,
+                dialogProps: {
+                    title: '导出Schema',
+                    width: '1000px'
+                },
+                componentProps: {
+                    genCode: this.getExportCode()
+                },
+                componentListeners: {
+                    toDemo: () => {
+                        this.handleToDemo();
+                    }
+                }
+            });
+        },
+        getExportCode() {
+            const { formFooter, formProps } = this;
+            const defaultConfig = {
+                formFooter: {
+                    show: true,
+                    okBtn: '保存',
+                    cancelBtn: '取消'
+                },
+                formProps: {
+                    inline: false,
+                    inlineFooter: false,
+                    layoutColumn: 1,
+                    labelPosition: 'top'
+                }
+            };
+
+            // 不做深度
+            const filter = (obj, defaultObj) => Object.keys(obj).reduce((pre, cur) => {
+                if (!(obj[cur] === defaultObj[cur])) {
+                    pre[cur] = obj[cur];
+                }
+                return pre;
+            }, {});
+
+            return {
+                schema: componentList2JsonSchema(this.componentList),
+                uiSchema: {},
+                formFooter: filter(formFooter, defaultConfig.formFooter),
+                formProps: filter(formProps, defaultConfig.formProps)
+            };
+        }
     }
 };
 </script>
 
 <style>
-    body.page-decorate-design{
-        overflow: hidden;
-    }
-    .flip-list-move {
-        transition: transform 0.3s;
-    }
-    .no-move {
-        transition: transform 0s;
-    }
+body.page-decorate-design {
+    overflow: hidden;
+}
+.flip-list-move {
+    transition: transform 0.3s;
+}
+.no-move {
+    transition: transform 0s;
+}
 </style>
 <style module>
-    @import 'demo-common/css/variable.css';
-    :root {
-        --tool-bar-width: 260px;
-        --right-form-width: 380px;
-        --drag-area-width: auto;
+@import "demo-common/css/variable.css";
+:root {
+    --tool-bar-width: 260px;
+    --right-form-width: 380px;
+    --drag-area-width: auto;
+}
+/*预览模式 同步样式重置*/
+.container {
+    position: relative;
+    box-sizing: border-box;
+    height: calc(100vh - 60px);
+    transition: 0.2s ease;
+}
+.hasTools {
+    padding-left: var(--tool-bar-width);
+    :global .el-icon-caret-right {
+        transform: rotate(180deg);
     }
-    /*预览模式 同步样式重置*/
-    .container {
-        position: relative;
-        box-sizing: border-box;
-        height: calc(100vh );
-        transition: 0.2s ease;
-    }
-    .hasTools {
-        padding-left: var(--tool-bar-width);
-        :global .el-icon-caret-right {
-            transform: rotate(180deg);
-        }
-    }
-    /*tools*/
-    .toolBarWrap, .rightForm{
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        background: var(--color-white);
-        box-shadow: 0 0 0 1px rgba(171 171 171,0.3);
-        z-index: 2;
-    }
+}
+/*tools*/
+.toolBarWrap,
+.rightForm {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: var(--color-white);
+    box-shadow: 0 0 0 1px rgba(171 171 171, 0.3);
+    z-index: 2;
+}
 
-    .rightForm, .toolsBar {
-        overflow: auto;
-        &::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-        }
+.rightForm,
+.toolsBar {
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
     }
+}
 
+.toolBarWrap {
+    padding-top: 10px;
+    width: var(--tool-bar-width);
+    left: 0;
+    overflow: visible;
+}
+.toolsBar {
+    height: 100%;
+}
+.leftCaret {
+    cursor: pointer;
+    position: absolute;
+    display: flex;
+    width: 18px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    top: 2px;
+    right: 0;
+    background: #ffffff;
+    box-shadow: 0 0 4px 0 color(var(--color-black) a(0.2));
+    border-radius: 2px 0 0 2px;
+    :global .el-icon-caret-right {
+        transition: all 0.3s ease;
+        transform: rotate(180deg);
+    }
+    &:hover {
+        box-shadow: 0 0 4px 0 color(var(--color-black) a(0.4));
+        opacity: 1;
+    }
+}
+.rightForm {
+    box-sizing: border-box;
+    padding: 10px;
+    right: 0;
+    width: var(--right-form-width);
+}
+.configForm {
+    padding: 0 20px;
+    & > h3 {
+        font-size: 15px;
+        font-weight: bold;
+    }
+}
+
+/*content area*/
+.contentWrap {
+    position: relative;
+    overflow: auto;
+    height: 100%;
+    padding-left: var(--tool-bar-width);
+    padding-right: var(--right-form-width);
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: var(--background-color-base);
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: var(--color-text-placeholder);
+    }
+}
+.closeToolbar {
+    padding-left: 0;
     .toolBarWrap {
-        padding-top: 10px;
-        width: var(--tool-bar-width);
-        left: 0;
-        overflow: visible;
-    }
-    .toolsBar {
-        height: 100%;
-    }
-    .leftCaret {
-        cursor: pointer;
-        position: absolute;
-        display: flex;
-        width: 18px;
-        height: 38px;
-        align-items: center;
-        justify-content: center;
-        top: 2px;
-        right: 0;
-        background: #FFFFFF;
-        box-shadow: 0 0 4px 0 color(var(--color-black) a(0.2));
-        border-radius: 2px 0 0 2px;
-        :global .el-icon-caret-right {
-            transition: all .3s ease;
-            transform: rotate(180deg);
+        left: calc(0 - var(--tool-bar-width));
+        .leftCaret {
+            right: -18px;
         }
-        &:hover {
-            box-shadow: 0 0 4px 0 color(var(--color-black) a(0.4));
-            opacity: 1;
-        }
-    }
-    .rightForm {
-        box-sizing: border-box;
-        padding: 10px;
-        right: 0;
-        width: var(--right-form-width);
-    }
-    .configForm {
-        padding: 0 20px;
-        &>h3 {
-            font-size: 15px;
-            font-weight: bold;
-        }
-    }
-
-    /*content area*/
-    .contentWrap {
-        position: relative;
-        overflow: auto;
-        height: 100%;
-        padding-left: var(--tool-bar-width);
-        padding-right: var(--right-form-width);
-        &::-webkit-scrollbar {
-            width: 6px;
-            height: 10px;
-        }
-        &::-webkit-scrollbar-track {
-            background-color: var(--background-color-base);
-        }
-        &::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            background-color: var(--color-text-placeholder);
-        }
-    }
-    .closeToolbar {
-        padding-left: 0;
-        .toolBarWrap {
-            left: calc(0 - var(--tool-bar-width));
-            .leftCaret {
-                right: -18px;
-            }
-            :global {
-                .el-icon-caret-right {
-                    transform: rotate(0);
-                }
+        :global {
+            .el-icon-caret-right {
+                transform: rotate(0);
             }
         }
     }
-    .contentBox {
-        position: relative;
-        padding: 0;
-        height: 100%;
+}
+.contentBox {
+    position: relative;
+    padding: 0;
+    height: 100%;
+}
+.tipBox {
+    pointer-events: none;
+    top: 20px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    margin: 30vh 0;
+    p {
+        margin: 20px 0;
+        font-size: 16px;
     }
-    .tipBox{
-        pointer-events: none;
-        top: 20px;
-        position: absolute;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        margin: 30vh 0;
-        p {
-            margin: 20px 0;
-            font-size: 16px;
-        }
-    }
+}
 </style>
