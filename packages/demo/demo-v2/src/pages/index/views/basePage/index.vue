@@ -6,7 +6,7 @@
 
 
 export default {
-    name: 'Demo',
+    name: 'BasePage',
     mounted() {
         window.location.href = '/schema-generator.html#/index';
     }

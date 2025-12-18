@@ -4,21 +4,18 @@
 
 const routes = [
     {
-        path: '/demo',
-        name: 'demo',
+        path: '/basePage',
+        name: 'basePage',
         meta: {
-            title: 'Demo'
+            title: 'BasePage'
         },
-        component: () => import('./views/Demo/index'),
+        component: () => import('./views/basePage/index')
     },
     {
         path: '*',
         hidden: true,
         redirect: {
-            name: 'demo',
-            query: {
-                type: 'Simple'
-            }
+            name: 'basePage'
         }
     }
 ];
