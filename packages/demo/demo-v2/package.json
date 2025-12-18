@@ -16,7 +16,10 @@
         "demo-common": "1.17.1",
         "iview": "^3.5.4",
         "vue": "^2.6.10",
-        "vuedraggable": "2.23.2"
+        "vuedraggable": "2.23.2",
+        "axios": "^0.21.1",
+        "qs": "^6.9.2",
+        "element-ui": "^2.15.14"
     },
     "devDependencies": {
         "@lljj/babel-preset-app": "^0.0.1",

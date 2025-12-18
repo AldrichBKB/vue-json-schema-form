@@ -9,10 +9,7 @@ const chalk = require('chalk');
 const log = require('./scripts/log');
 const envConfig = require('./scripts/envConfig').getConfig();
 
-const {
-    entries,
-    openPage
-} = require('./scripts/entry.js')({
+const { entries, openPage } = require('./scripts/entry.js')({
     chunks: ['user-runtime', 'user-vendors-polyfill']
 });
 
@@ -58,10 +55,11 @@ module.exports = {
         config.externals = {
             vue: 'Vue',
             ELEMENT: 'ELEMENT',
-            VueRouter: 'VueRouter',
+            VueRouter: 'VueRouter'
         };
         config.resolve.alias = {
             ...config.resolve.alias,
+            '@': path.resolve(__dirname, 'src')
             // '@lljj/vue-json-schema-form': '@lljj/vue-json-schema-form/src/index',
             // '@lljj/vue2-form-iview3': '@lljj/vue2-form-iview3/src/index',
         };
@@ -82,13 +80,14 @@ module.exports = {
                     name: 'user-vendors-polyfill',
                     chunks: 'initial',
                     priority: 12,
-                    test: module => /[\\/]node_modules[\\/]/.test(module.context) || /components\\ElementUi/.test(module.context),
+                    test: module => /[\\/]node_modules[\\/]/.test(module.context)
+                        || /components\\ElementUi/.test(module.context)
                 },
                 asyncVendor: {
                     name: 'chunk-vendors-async',
                     chunks: 'async',
                     priority: 8,
-                    minChunks: 5,
+                    minChunks: 5
                 }
             }
         };
@@ -98,20 +97,26 @@ module.exports = {
         // js 文件名调整
         if (isProduction) {
             // 资源表
-            config.plugin('manifest').use(ManifestPlugin, [{
-                fileName: 'manifest.json',
-                filter: (obj) => {
-                    const ext = path.extname(obj.name);
-                    const includeExts = ['.js', '.css'];
-                    return includeExts.includes(ext) && !obj.name.includes('chunk-');
+            config.plugin('manifest').use(ManifestPlugin, [
+                {
+                    fileName: 'manifest.json',
+                    filter: (obj) => {
+                        const ext = path.extname(obj.name);
+                        const includeExts = ['.js', '.css'];
+                        return (
+                            includeExts.includes(ext)
+                            && !obj.name.includes('chunk-')
+                        );
+                    }
                 }
-            }]);
+            ]);
         }
 
         // report
         if (envConfig.report) {
             // eslint-disable-next-line global-require
-            const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+            const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+                .BundleAnalyzerPlugin;
             config.plugin('bundle-analyzer').use(BundleAnalyzerPlugin);
         }
 

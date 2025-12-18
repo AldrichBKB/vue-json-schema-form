@@ -111,7 +111,6 @@ export default {
             display: block;
             width: 100%;
             padding: 0 3px;
-            @mixin nowrap;
         }
         &:hover {
             color: var(--color-primary);

@@ -144,15 +144,15 @@
 import VueJsonFrom from '@lljj/vue-json-schema-form';
 
 import componentWithDialog from 'demo-common/components/component-with-dialog';
+import { getColumnPage } from '@/api/common';
+
 import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
 import ExportSchemaView from './components/ExportSchemaView .vue';
-
 import { deepFreeze } from './common/utils';
-
 import configTools from './config/tools';
-
 import NestedEditor from './components/NestedEditor';
+
 import {
     formatFormLabelWidth,
     componentList2JsonSchema
@@ -216,7 +216,13 @@ export default {
             };
         }
     },
-    mounted() {
+    async  mounted() {
+        await getColumnPage({
+            formCode:
+                'FORM_WORK_ORDER_ADD',
+            pageDto:
+                { page: 1, pageSize: 50 }
+        });
         window.document.body.classList.add('page-decorate-design');
     },
     destroyed() {
