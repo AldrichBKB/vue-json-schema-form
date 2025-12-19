@@ -82,11 +82,10 @@
                 <div :class="$style.rightForm">
                     <el-tabs v-model="activeName">
                         <el-tab-pane
-                            v-if="curEditorItem"
                             label="组件配置"
                             name="compConfig"
                         >
-                            <ViewComponents />
+                            <ViewComponents ref="viewComponentsRef" />
                             <!-- <VueJsonFrom
                                 v-model="curEditorItem.componentValue"
                                 :class="$style.configForm"
@@ -218,6 +217,8 @@ export default {
             const newEditorItem = deepCopy(editorItem);
             newEditorItem.props = newEditorItem.props ? JSON.parse(newEditorItem.props) : {};
             this.curEditorItem = newEditorItem;
+            this.$refs.viewComponentsRef.setData(this.curEditorItem);
+
         });
         this.getColumnPage();
     },
