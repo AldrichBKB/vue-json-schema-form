@@ -2,7 +2,7 @@
  * Created by Liu.Jun on 2020/11/20 17:44.
  */
 
-import { formatFormLabelWidth } from '../../common/editorData';
+// import { formatFormLabelWidth } from '../../common/editorData';
 
 
 export default {

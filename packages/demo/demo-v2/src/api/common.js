@@ -75,3 +75,13 @@ export function getColumnPageHttp(data) {
         headers: { 'Content-Type': 'application/json' }
     });
 }
+
+
+export function getColumnTypeHttp(data) {
+    return axios({
+        url: '/platform-manage-flow-api/api/form/setting/column/type',
+        data,
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' }
+    });
+}

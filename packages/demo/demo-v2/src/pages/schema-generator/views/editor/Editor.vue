@@ -86,7 +86,8 @@
                             label="组件配置"
                             name="compConfig"
                         >
-                            <VueJsonFrom
+                            <ViewComponents />
+                            <!-- <VueJsonFrom
                                 v-model="curEditorItem.componentValue"
                                 :class="$style.configForm"
                                 :schema="
@@ -100,7 +101,7 @@
                                     show: false
                                 }"
                             >
-                            </VueJsonFrom>
+                            </VueJsonFrom> -->
                         </el-tab-pane>
                         <!-- <el-tab-pane
                             label="表单配置"
@@ -128,13 +129,14 @@
 </template>
 
 <script>
-import VueJsonFrom from '@lljj/vue-json-schema-form';
-
+// import VueJsonFrom from '@lljj/vue-json-schema-form';
 import { getColumnPageHttp } from '@/api/common';
+import ViewComponents from './viewComponentsNew/genSchema.vue';
 
-import FormConfSchema from './viewComponents/FormConf';
+
+// import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
-import { deepFreeze } from './common/utils';
+import { deepFreeze, deepCopy } from './common/utils';
 import configTools from './config/tools';
 import NestedEditor from './components/NestedEditor';
 
@@ -147,7 +149,8 @@ deepFreeze(configTools);
 export default {
     name: 'Editor',
     components: {
-        VueJsonFrom,
+        ViewComponents,
+        // VueJsonFrom,
         EditorToolBar,
         NestedEditor
     },
@@ -166,7 +169,7 @@ export default {
             rootFormData: {},
             curEditorItem: null, // 选中的formItem
             componentList: [],
-            FormConfSchema,
+            // FormConfSchema,
             formConfig: {},
             activeName: 'compConfig',
 
@@ -211,8 +214,10 @@ export default {
     },
     created() {
         this.$on('onSetCurEditorItem', ({ editorItem }) => {
-            this.activeName = editorItem ? 'compConfig' : 'formConfig';
-            this.curEditorItem = editorItem;
+            // this.activeName = editorItem ? 'compConfig' : 'formConfig';
+            const newEditorItem = deepCopy(editorItem);
+            newEditorItem.props = newEditorItem.props ? JSON.parse(newEditorItem.props) : {};
+            this.curEditorItem = newEditorItem;
         });
         this.getColumnPage();
     },
@@ -228,7 +233,10 @@ export default {
 
                 if (data.code === 200) {
                     this.columnList = data.data.records;
-                    this.componentList = this.columnList;
+                    this.componentList = this.columnList.map(item => ({
+                        ...item,
+                        isEdit: false
+                    }));
                 }
             } finally {
                 this.loading = false;
