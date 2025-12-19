@@ -7,48 +7,11 @@
         }"
         @click="handleClickView"
     >
-        <span :class="$style.formProperty"> {{ attrs.curNodePath }}</span>
-        <div
-            v-if="editorItem.isEdit"
-            :class="$style.editBar"
-        >
-            <button
-                :disabled="editorItem.toolBar.moveUpDisabled"
-                :class="$style.toolBarBtn"
-                class="el-icon-caret-top"
-                title="上移"
-                type="button"
-                @click="$emit('onOperate', { item: editorItem, command: 'moveUp'})"
-            ></button>
-            <button
-                :disabled="editorItem.toolBar.moveDownDisabled"
-                :class="$style.toolBarBtn"
-                class="el-icon-caret-bottom"
-                title="下移"
-                type="button"
-                @click="$emit('onOperate', { item: editorItem, command: 'moveDown'})"
-            ></button>
-            <button
-                :disabled="editorItem.toolBar.copyDisabled"
-                :class="[$style.toolBarBtn]"
-                class="el-icon-copy-document"
-                title="复制"
-                type="button"
-                @click="$emit('onOperate', { item: editorItem, command: 'copy' })"
-            ></button>
-            <button
-                :disabled="editorItem.toolBar.removeDisabled"
-                :class="$style.toolBarBtn"
-                class="el-icon-delete"
-                title="移除"
-                type="button"
-                @click="$emit('onOperate', { item: editorItem, command: 'remove' })"
-            ></button>
-        </div>
-        <SchemaField
-            v-bind="attrs"
-        >
-        </SchemaField>
+        <!-- <span :class="$style.formProperty"> {{ attrs.curNodePath }}</span> -->
+        <span :class="$style.formProperty"> {{ editorItem.column }}</span>
+        <h1>
+            {{ editorItem.columnName }}
+        </h1>
 
         <NestedEditor
             v-if="showNestedEditor(editorItem)"
@@ -62,7 +25,7 @@
 </template>
 
 <script>
-import { SchemaField, globalOptions } from '@lljj/vue-json-schema-form';
+import { globalOptions } from '@lljj/vue-json-schema-form';
 import emitter from '../../../mixins/emitter.js';
 import NestedEditor from './NestedEditor';
 import { editorItem2SchemaFieldProps } from '../common/editorData';
@@ -70,7 +33,6 @@ import { editorItem2SchemaFieldProps } from '../common/editorData';
 export default {
     name: 'ViewComponentWrap',
     components: {
-        SchemaField,
         NestedEditor
     },
     mixins: [emitter],
@@ -162,7 +124,7 @@ export default {
     .viewBox {
         position: relative;
         margin-bottom: 10px;
-        padding: 30px 10px 10px;
+        padding: 20px;
         cursor: move;
         outline: none;
         border: 1px dashed #bbb;

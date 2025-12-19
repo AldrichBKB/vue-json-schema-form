@@ -1,19 +1,5 @@
 <template>
     <div v-loading="loading">
-        <div
-            :style="{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                padding: '10px'
-            }"
-        >
-            <el-button
-                type="primary"
-                @click="handleExportSchema"
-            >
-                导出Schema
-            </el-button>
-        </div>
         <div :class="[$style.container]">
             <div
                 :class="{
@@ -55,7 +41,6 @@
                             // [`genFromComponent_${schema.id}Form`]: !!schema.id,
                         }"
                     >
-                        {{ componentList }}
                         <NestedEditor
                             :child-component-list="componentList"
                             :drag-options="dragOptions"
@@ -117,7 +102,7 @@
                             >
                             </VueJsonFrom>
                         </el-tab-pane>
-                        <el-tab-pane
+                        <!-- <el-tab-pane
                             label="表单配置"
                             name="formConfig"
                         >
@@ -134,7 +119,7 @@
                                 }"
                             >
                             </VueJsonFrom>
-                        </el-tab-pane>
+                        </el-tab-pane> -->
                     </el-tabs>
                 </div>
             </div>
@@ -145,19 +130,16 @@
 <script>
 import VueJsonFrom from '@lljj/vue-json-schema-form';
 
-import componentWithDialog from 'demo-common/components/component-with-dialog';
 import { getColumnPageHttp } from '@/api/common';
 
 import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
-import ExportSchemaView from './components/ExportSchemaView .vue';
 import { deepFreeze } from './common/utils';
 import configTools from './config/tools';
 import NestedEditor from './components/NestedEditor';
 
 import {
     formatFormLabelWidth,
-    componentList2JsonSchema
 } from './common/editorData';
 
 deepFreeze(configTools);
@@ -186,7 +168,9 @@ export default {
             componentList: [],
             FormConfSchema,
             formConfig: {},
-            activeName: 'formConfig'
+            activeName: 'compConfig',
+
+            columnList: []
         };
     },
 
@@ -235,61 +219,24 @@ export default {
 
     methods: {
         async getColumnPage() {
-            console.log(123);
+            this.loading = true;
+            try {
+                const { data } = await getColumnPageHttp({
+                    formCode: 'FORM_WORK_ORDER_ADD',
+                    pageDto: { page: 1, pageSize: 999 }
+                });
 
-            await getColumnPageHttp({
-                formCode: 'FORM_WORK_ORDER_ADD',
-                pageDto: { page: 1, pageSize: 999 }
-            });
+                if (data.code === 200) {
+                    this.columnList = data.data.records;
+                    this.componentList = this.columnList;
+                }
+            } finally {
+                this.loading = false;
+            }
+
         },
-        handleExportSchema() {
-            componentWithDialog({
-                VueComponent: ExportSchemaView,
-                dialogProps: {
-                    title: '导出Schema',
-                    width: '1000px'
-                },
-                componentProps: {
-                    genCode: this.getExportCode()
-                },
-                componentListeners: {
-                    toDemo: () => {
-                        this.handleToDemo();
-                    }
-                }
-            });
-        },
-        getExportCode() {
-            const { formFooter, formProps } = this;
-            const defaultConfig = {
-                formFooter: {
-                    show: true,
-                    okBtn: '保存',
-                    cancelBtn: '取消'
-                },
-                formProps: {
-                    inline: false,
-                    inlineFooter: false,
-                    layoutColumn: 1,
-                    labelPosition: 'top'
-                }
-            };
 
-            // 不做深度
-            const filter = (obj, defaultObj) => Object.keys(obj).reduce((pre, cur) => {
-                if (!(obj[cur] === defaultObj[cur])) {
-                    pre[cur] = obj[cur];
-                }
-                return pre;
-            }, {});
 
-            return {
-                schema: componentList2JsonSchema(this.componentList),
-                uiSchema: {},
-                formFooter: filter(formFooter, defaultConfig.formFooter),
-                formProps: filter(formProps, defaultConfig.formProps)
-            };
-        }
     }
 };
 </script>
@@ -316,7 +263,7 @@ body.page-decorate-design {
 .container {
     position: relative;
     box-sizing: border-box;
-    height: calc(100vh - 60px);
+    height: calc(100vh);
     transition: 0.2s ease;
 }
 .hasTools {

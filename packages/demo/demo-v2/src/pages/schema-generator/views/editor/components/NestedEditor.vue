@@ -14,9 +14,13 @@
                 w100: showNestedEditor(item),
                 [$style.formItem]: true
             }"
-            :style=" item.componentValue.baseValue.uiOptions.width ? {
-                width: item.componentValue.baseValue.uiOptions.width,
-                flexBasis: item.componentValue.baseValue.uiOptions.width
+            :style=" item.placeholder ? {
+                width: item.placeholder
+                    ? `calc(${100 / (24 / item.placeholder)}%)`
+                    : 'calc(50%)',
+                flexBasis: item.placeholder
+                    ? `calc(${100 / (24 / item.placeholder)}%)`
+                    : 'calc(50%)'
             } : {}"
         >
             <ViewComponentWrap
@@ -37,8 +41,6 @@
 
 <script>
 import Draggable from 'vuedraggable';
-import * as arrayMethods from 'demo-common/utils/array';
-import { generateEditorItem } from '../common/editorData';
 
 // 避免循环依赖导致undefined
 const ViewComponentWrap = () => import('./ViewComponentWrap');
@@ -67,13 +69,7 @@ export default {
             default: null
         }
     },
-    watch: {
-        childComponentList() {
-            this.computedComponentToolBarStatus();
-        }
-    },
-    created() {
-    },
+
     methods: {
         showNestedEditor(editorItem) {
             return editorItem.childList && !editorItem.componentPack.viewSchema.format;
@@ -81,45 +77,8 @@ export default {
         handleDragChange(...args) {
             console.log(args);
         },
-        // 计算各个组件状态栏按钮状态
-        computedComponentToolBarStatus() {
-            this.childComponentList.forEach((component, componentIndex) => {
-                Object.assign(component.toolBar, {
-                    moveUpDisabled: componentIndex === 0, // 是否可上移动
-                    moveDownDisabled: componentIndex === this.childComponentList.length - 1, // 是否可下移
-                    removeDisabled: component.additional && component.additional.unRemove // 是否可移除
-                });
-            });
-        },
-        // 操作单个组件
-        handleItemOperate({ item, command }) {
-            const strategyMap = {
-                moveUp(target, arrayItem) {
-                    return arrayMethods.moveUp(target, arrayItem);
-                },
-                moveDown(target, arrayItem) {
-                    return arrayMethods.moveDown(target, arrayItem);
-                },
-                copy(target, arrayItem) {
-                    // 不copy数据
-                    // eslint-disable-next-line no-unused-vars
-                    const { componentValue, ...emptyPack } = arrayItem;
 
-                    return target.splice(target.indexOf(arrayItem) + 1, 0, generateEditorItem(emptyPack));
-                },
-                remove(target, arrayItem) {
-                    return arrayMethods.remove(target, arrayItem);
-                }
-            };
 
-            const curStrategy = strategyMap[command];
-
-            if (curStrategy) {
-                curStrategy.apply(this, [this.childComponentList, item]);
-            } else {
-                this.$message.error(`系统错误 - 未知的操作：[${command}]`);
-            }
-        },
     }
 };
 </script>
