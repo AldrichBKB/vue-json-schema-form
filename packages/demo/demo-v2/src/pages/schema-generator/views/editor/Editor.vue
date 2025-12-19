@@ -47,7 +47,7 @@
                             :form-data="rootFormData"
                             :form-props="formProps"
                         >
-                            <el-form-item
+                            <!-- <el-form-item
                                 v-if="
                                     componentList.length > 0 && formFooter.show
                                 "
@@ -69,7 +69,7 @@
                                 >
                                     {{ formFooter.okBtn }}
                                 </el-button>
-                            </el-form-item>
+                            </el-form-item> -->
                         </NestedEditor>
                     </el-form>
                     <div
@@ -139,9 +139,9 @@ import { deepFreeze, deepCopy } from './common/utils';
 import configTools from './config/tools';
 import NestedEditor from './components/NestedEditor';
 
-import {
-    formatFormLabelWidth,
-} from './common/editorData';
+// import {
+//     formatFormLabelWidth,
+// } from './common/editorData';
 
 deepFreeze(configTools);
 
@@ -178,13 +178,15 @@ export default {
 
     computed: {
         formProps() {
-            if (!this.formConfig.formProps) return {};
-            return {
-                ...this.formConfig.formProps,
-                labelWidth: formatFormLabelWidth(
-                    this.formConfig.formProps.labelWidth
-                )
-            };
+            return this.curEditorItem && this.curEditorItem.props ? JSON.parse(this.curEditorItem.props) : {};
+
+            // if (!this.formConfig.formProps) return {};
+            // return {
+            //     ...this.formConfig.formProps,
+            //     labelWidth: formatFormLabelWidth(
+            //         this.formConfig.formProps.labelWidth
+            //     )
+            // };
         },
         formFooter() {
             return this.formConfig.formFooter || {};
