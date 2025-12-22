@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="sub_title">输入框配置</div>
+        <div class="sub_title">数字输入框配置</div>
         <el-form
             ref="formRef"
             size="small"
@@ -14,13 +14,30 @@
                 <el-input v-model="formProps.placeholder"></el-input>
             </el-form-item>
             <el-form-item
-                label="最大输入长度"
-                prop="maxlength"
+                label="最大数"
+                prop="max"
             >
                 <el-input-number
-                    v-model="formProps.maxlength"
-                    :min="1"
-                    :max="2000"
+                    v-model="formProps.max"
+                    :precision="0"
+                />
+            </el-form-item>
+            <el-form-item
+                label="最小数"
+                prop="min"
+            >
+                <el-input-number
+                    v-model="formProps.min"
+                    :precision="0"
+                />
+            </el-form-item>
+            <el-form-item
+                label="精度"
+                prop="precision"
+            >
+                <el-input-number
+                    v-model="formProps.precision"
+                    :min="0"
                     :precision="0"
                 />
             </el-form-item>
@@ -35,6 +52,15 @@
                 prop="suffix"
             >
                 <el-input v-model="formProps.suffix"></el-input>
+            </el-form-item>
+            <el-form-item
+                label="是否是金额"
+                prop="isAmount"
+            >
+                <el-radio-group v-model="formProps.isAmount">
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
+                </el-radio-group>
             </el-form-item>
         </el-form>
     </div>
@@ -52,10 +78,12 @@ export default {
         formProps() {
             const DEFAULTS = {
                 placeholder: '请输入',
-                type: 'textarea',
-                maxlength: 500,
+                max: undefined,
+                min: undefined,
+                precision: 0,
                 prefix: '',
-                suffix: ''
+                suffix: '',
+                isAmount: false
             };
             const values = this.value || {};
             return {

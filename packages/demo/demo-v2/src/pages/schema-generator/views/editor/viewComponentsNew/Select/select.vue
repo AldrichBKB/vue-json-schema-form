@@ -22,18 +22,6 @@
                     <el-radio :label="false">否</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item
-                label="前缀"
-                prop="prefix"
-            >
-                <el-input v-model="formProps.prefix"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="后缀"
-                prop="suffix"
-            >
-                <el-input v-model="formProps.suffix"></el-input>
-            </el-form-item>
         </el-form>
     </div>
 </template>
@@ -51,8 +39,6 @@ export default {
             const DEFAULTS = {
                 placeholder: '请选择',
                 multiple: false,
-                prefix: '',
-                suffix: ''
             };
             const values = this.value || {};
             return {

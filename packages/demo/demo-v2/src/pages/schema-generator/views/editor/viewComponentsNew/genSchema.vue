@@ -112,6 +112,10 @@
             v-if="formData.columnType === COLUMNTYPE.INPUT"
             v-model="formProps"
         />
+        <ComponentInputNumber
+            v-if="formData.columnType === COLUMNTYPE.NUMBER"
+            v-model="formProps"
+        />
         <ComponentSelect
             v-if="
                 [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(editorItem.columnType)
@@ -142,11 +146,14 @@ import { COLUMNTYPE } from './enums/processEnum';
 import { deepCopy } from '../common/utils';
 
 const ComponentInput = () => import('./Input/Input.vue');
+const ComponentInputNumber = () => import('./InputNumber/InputNumber.vue');
+
 const ComponentSelect = () => import('./Select/Select.vue');
 
 export default {
     components: {
         ComponentInput,
+        ComponentInputNumber,
         ComponentSelect
     },
     data() {

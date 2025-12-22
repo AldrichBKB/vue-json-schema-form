@@ -28,9 +28,17 @@
                     autosize
                 >
                 </el-input>
+                <el-input-number
+                    v-if="editorItem.columnType === COLUMNTYPE.NUMBER"
+                    v-bind="attrs"
+                    autosize
+                >
+                </el-input-number>
                 <el-select
                     v-if="
-                        [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(editorItem.columnType)
+                        [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(
+                            editorItem.columnType
+                        )
                     "
                     v-bind="attrs"
                 >
@@ -244,7 +252,8 @@ export default {
     bottom: 1px;
     line-height: 30px;
 }
-.el-select{
+.el-select,
+.el-input-number {
     width: 100%;
 }
 </style>
