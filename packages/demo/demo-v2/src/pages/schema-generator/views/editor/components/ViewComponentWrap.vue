@@ -13,7 +13,7 @@
         </p>
         <el-form
             ref="formRef"
-            label-width="auto"
+            label-width="140px"
             size="small"
             label-suffix=":"
             :style="{ marginTop: '10px' }"
@@ -25,8 +25,16 @@
                 <el-input
                     v-if="editorItem.columnType === COLUMNTYPE.INPUT"
                     v-bind="attrs"
+                    autosize
                 >
                 </el-input>
+                <el-select
+                    v-if="
+                        [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(editorItem.columnType)
+                    "
+                    v-bind="attrs"
+                >
+                </el-select>
             </el-form-item>
         </el-form>
 
@@ -84,7 +92,9 @@ export default {
     },
     computed: {
         attrs() {
-            return this.editorItem && this.editorItem.props ? JSON.parse(this.editorItem.props) : {};
+            return this.editorItem && this.editorItem.props
+                ? JSON.parse(this.editorItem.props)
+                : {};
             // return {
 
             //     // formProps: this.formProps,
@@ -226,5 +236,15 @@ export default {
             opacity: 0.6;
         }
     }
+}
+</style>
+
+<style>
+.el-textarea .el-input__count {
+    bottom: 1px;
+    line-height: 30px;
+}
+.el-select{
+    width: 100%;
 }
 </style>

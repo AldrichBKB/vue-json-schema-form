@@ -50,6 +50,19 @@
             >
                 <el-input
                     v-model="formData.dataLink"
+                    type="textarea"
+                    autosize
+                    placeholder="请输入"
+                />
+            </el-form-item>
+            <el-form-item
+                label="静态数据JSON"
+                prop="columnDatas"
+            >
+                <el-input
+                    v-model="formData.columnDatas"
+                    type="textarea"
+                    autosize
                     placeholder="请输入"
                 />
             </el-form-item>
@@ -95,12 +108,27 @@
                 />
             </el-form-item>
         </el-form>
-        <ComponentInput v-if="formData.columnType === COLUMNTYPE.INPUT" />
+        <ComponentInput
+            v-if="formData.columnType === COLUMNTYPE.INPUT"
+            v-model="formProps"
+        />
+        <ComponentSelect
+            v-if="
+                [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(editorItem.columnType)
+            "
+            v-model="formProps"
+        />
         <div class="schema_footer">
-            <el-button size="small">取 消</el-button>
+            <el-button
+                size="small"
+                @click="handelCancel"
+            >
+                取 消
+            </el-button>
             <el-button
                 size="small"
                 type="primary"
+                @click="handelSave"
             >
                 确 认
             </el-button>
@@ -111,12 +139,15 @@
 <script>
 import { getColumnTypeHttp } from '@/api/common';
 import { COLUMNTYPE } from './enums/processEnum';
+import { deepCopy } from '../common/utils';
 
 const ComponentInput = () => import('./Input/Input.vue');
+const ComponentSelect = () => import('./Select/Select.vue');
 
 export default {
     components: {
-        ComponentInput
+        ComponentInput,
+        ComponentSelect
     },
     data() {
         return {
@@ -126,6 +157,7 @@ export default {
                 columnName: '',
                 columnType: '',
                 dataLink: '',
+                columnDatas: '',
                 point: 0,
                 placeholder: 12,
                 visibilityRule: ''
@@ -137,7 +169,9 @@ export default {
                 point: [{ required: true, message: '请选择' }],
                 placeholder: [{ required: true, message: '请选择' }]
             },
-            columnTypeOptions: []
+            columnTypeOptions: [],
+            formProps: {},
+            editorItem: {}
         };
     },
     async mounted() {
@@ -145,8 +179,25 @@ export default {
         this.columnTypeOptions = data.data;
     },
     methods: {
-        setData(editorItem = {}) {
-            this.formData = editorItem;
+        setData(row = {}) {
+            this.editorItem = deepCopy(row);
+            const { props } = deepCopy(row);
+            this.formProps = props || {};
+            delete row.props;
+            this.formData = row;
+        },
+        handelSave() {
+            this.$emit('save', {
+                formProps: this.formProps,
+                formData: this.formData
+            });
+        },
+        handelCancel() {
+            const row = deepCopy(this.editorItem);
+            const { props } = deepCopy(row);
+            this.formProps = props || {};
+            delete row.props;
+            this.formData = row;
         }
     }
 };

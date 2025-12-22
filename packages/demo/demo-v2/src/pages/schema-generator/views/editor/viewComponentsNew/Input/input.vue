@@ -4,52 +4,55 @@
         <el-form
             ref="formRef"
             size="small"
-            :model="formData"
+            :model="formProps"
             label-width="auto"
         >
             <el-form-item
                 label="占位符"
                 prop="placeholder"
             >
-                <el-input v-model="formData.placeholder"></el-input>
+                <el-input v-model="formProps.placeholder"></el-input>
             </el-form-item>
             <el-form-item
                 label="最大输入长度"
                 prop="maxlength"
             >
-                <el-input v-model="formData.maxlength"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="前缀"
-                prop="prefix"
-            >
-                <el-input v-model="formData.prefix"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="后缀"
-                prop="suffix"
-            >
-                <el-input v-model="formData.suffix"></el-input>
+                <el-input-number
+                    v-model="formProps.maxlength"
+                    :min="1"
+                    :max="2000"
+                    :precision="0"
+                />
             </el-form-item>
         </el-form>
     </div>
 </template>
 
-<script >
+<script>
 export default {
-    data() {
-        return {
-            formData: {
+    props: {
+        value: {
+            type: Object,
+            default: () => ({})
+        }
+    },
+    computed: {
+        formProps() {
+            const DEFAULTS = {
                 placeholder: '请输入',
+                type: 'textarea',
                 maxlength: 500,
                 prefix: '',
                 suffix: ''
-            }
-        };
-    },
+            };
+            const values = this.value || {};
+            return {
+                ...DEFAULTS,
+                ...values
+            };
+        }
+    }
 };
 </script>
 
-<style scoped lang='scss'>
-
-</style>
+<style scoped lang="scss"></style>
