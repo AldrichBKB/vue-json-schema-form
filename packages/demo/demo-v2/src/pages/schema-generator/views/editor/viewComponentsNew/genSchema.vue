@@ -1,127 +1,135 @@
 <template>
     <div class="schema-warpper">
-        <div class="sub_title">基础配置</div>
-        <el-form
-            ref="formRef"
-            size="small"
-            label-width="auto"
-            label-suffix=":"
-            :model="formData"
-            :rules="rules"
-        >
-            <el-form-item
-                label="字段名称Key"
-                prop="column"
+        <div class="schema-content">
+            <div class="sub_title">基础配置</div>
+            <el-form
+                ref="formRef"
+                size="small"
+                label-width="auto"
+                label-suffix=":"
+                :model="formData"
+                :rules="rules"
             >
-                <el-input
-                    v-model="formData.column"
-                    placeholder="请输入"
-                />
-            </el-form-item>
-            <el-form-item
-                label="字段名称描述"
-                prop="columnName"
-            >
-                <el-input
-                    v-model="formData.columnName"
-                    placeholder="请输入"
-                />
-            </el-form-item>
-            <el-form-item
-                label="字段类型"
-                prop="columnType"
-            >
-                <el-select
-                    v-model="formData.columnType"
-                    :style="{ width: '100%' }"
-                    placeholder="请选择"
+                <el-form-item
+                    label="字段名称Key"
+                    prop="column"
                 >
-                    <el-option
-                        v-for="item in columnTypeOptions"
-                        :key="item.code"
-                        :label="item.code"
-                        :value="item.code"
+                    <el-input
+                        v-model="formData.column"
+                        placeholder="请输入"
                     />
-                </el-select>
-            </el-form-item>
-            <el-form-item
-                label="数据地址"
-                prop="dataLink"
-            >
-                <el-input
-                    v-model="formData.dataLink"
-                    type="textarea"
-                    autosize
-                    placeholder="请输入"
-                />
-            </el-form-item>
-            <el-form-item
-                label="静态数据JSON"
-                prop="columnDatas"
-            >
-                <el-input
-                    v-model="formData.columnDatas"
-                    type="textarea"
-                    autosize
-                    placeholder="请输入"
-                />
-            </el-form-item>
-            <el-form-item
-                label="是否是主要内容"
-                prop="point"
-            >
-                <el-radio-group v-model="formData.point">
-                    <el-radio :label="0">否</el-radio>
-                    <el-radio :label="1">是</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item
-                label="占位"
-                prop="placeholder"
-            >
-                <el-select
-                    v-model="formData.placeholder"
-                    :style="{ width: '100%' }"
-                    placeholder="请选择"
+                </el-form-item>
+                <el-form-item
+                    label="字段名称描述"
+                    prop="columnName"
                 >
-                    <el-option
-                        label="占位1/2"
-                        :value="12"
+                    <el-input
+                        v-model="formData.columnName"
+                        placeholder="请输入"
                     />
-                    <el-option
-                        label="占位1/3"
-                        :value="8"
+                </el-form-item>
+                <el-form-item
+                    label="字段类型"
+                    prop="columnType"
+                >
+                    <el-select
+                        v-model="formData.columnType"
+                        :style="{ width: '100%' }"
+                        placeholder="请选择"
+                    >
+                        <el-option
+                            v-for="item in columnTypeOptions"
+                            :key="item.code"
+                            :label="item.code"
+                            :value="item.code"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item
+                    label="数据地址"
+                    prop="dataLink"
+                >
+                    <el-input
+                        v-model="formData.dataLink"
+                        type="textarea"
+                        autosize
+                        placeholder="请输入"
                     />
-                    <el-option
-                        label="占位1/4"
-                        :value="6"
+                </el-form-item>
+                <el-form-item
+                    label="静态数据JSON"
+                    prop="columnDatas"
+                >
+                    <el-input
+                        v-model="formData.columnDatas"
+                        type="textarea"
+                        autosize
+                        placeholder="请输入"
                     />
-                </el-select>
-            </el-form-item>
-            <el-form-item
-                label="展示条件"
-                prop="visibilityRule"
-            >
-                <el-input
-                    v-model="formData.visibilityRule"
-                    placeholder="请输入"
-                />
-            </el-form-item>
-        </el-form>
-        <ComponentInput
-            v-if="formData.columnType === COLUMNTYPE.INPUT"
-            v-model="formProps"
-        />
-        <ComponentInputNumber
-            v-if="formData.columnType === COLUMNTYPE.NUMBER"
-            v-model="formProps"
-        />
-        <ComponentSelect
-            v-if="
-                [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(editorItem.columnType)
-            "
-            v-model="formProps"
-        />
+                </el-form-item>
+                <el-form-item
+                    label="是否是主要内容"
+                    prop="point"
+                >
+                    <el-radio-group v-model="formData.point">
+                        <el-radio :label="0">否</el-radio>
+                        <el-radio :label="1">是</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item
+                    label="占位"
+                    prop="placeholder"
+                >
+                    <el-select
+                        v-model="formData.placeholder"
+                        :style="{ width: '100%' }"
+                        placeholder="请选择"
+                    >
+                        <el-option
+                            label="占位1/2"
+                            :value="12"
+                        />
+                        <el-option
+                            label="占位1/3"
+                            :value="8"
+                        />
+                        <el-option
+                            label="占位1/4"
+                            :value="6"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item
+                    label="展示条件"
+                    prop="visibilityRule"
+                >
+                    <el-input
+                        v-model="formData.visibilityRule"
+                        placeholder="请输入"
+                    />
+                </el-form-item>
+            </el-form>
+            <ComponentInput
+                v-if="formData.columnType === COLUMNTYPE.INPUT"
+                v-model="formProps"
+            />
+            <ComponentInputNumber
+                v-if="formData.columnType === COLUMNTYPE.NUMBER"
+                v-model="formProps"
+            />
+            <ComponentSelect
+                v-if="
+                    [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(
+                        editorItem.columnType
+                    )
+                "
+                v-model="formProps"
+            />
+            <ComponentCascader
+                v-if="formData.columnType === COLUMNTYPE.CASCADER"
+                v-model="formProps"
+            />
+        </div>
         <div class="schema_footer">
             <el-button
                 size="small"
@@ -147,14 +155,15 @@ import { deepCopy } from '../common/utils';
 
 const ComponentInput = () => import('./Input/Input.vue');
 const ComponentInputNumber = () => import('./InputNumber/InputNumber.vue');
-
 const ComponentSelect = () => import('./Select/Select.vue');
+const ComponentCascader = () => import('./Cascader/Cascader.vue');
 
 export default {
     components: {
         ComponentInput,
         ComponentInputNumber,
-        ComponentSelect
+        ComponentSelect,
+        ComponentCascader
     },
     data() {
         return {
@@ -230,6 +239,10 @@ export default {
 }
 .schema-warpper {
     height: calc(100vh - 74px);
+}
+.schema-content {
+    height: calc(100% - 60px);
+    overflow-y: auto;
 }
 .schema_footer {
     border-top: 1px solid #f5f5f5;

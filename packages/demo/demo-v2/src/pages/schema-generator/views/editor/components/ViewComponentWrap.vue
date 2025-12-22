@@ -43,6 +43,10 @@
                     v-bind="attrs"
                 >
                 </el-select>
+                <el-cascader
+                    v-if="editorItem.columnType === COLUMNTYPE.CASCADER"
+                    v-bind="attrs"
+                />
             </el-form-item>
         </el-form>
 
@@ -253,7 +257,7 @@ export default {
     line-height: 30px;
 }
 .el-select,
-.el-input-number {
+.el-input-number,.el-cascader {
     width: 100%;
 }
 </style>

@@ -4,6 +4,7 @@
         <el-form
             ref="formRef"
             size="small"
+            label-suffix=":"
             :model="formProps"
             label-width="auto"
         >
