@@ -47,6 +47,10 @@
                     v-if="editorItem.columnType === COLUMNTYPE.CASCADER"
                     v-bind="attrs"
                 />
+                <el-date-picker
+                    v-if="editorItem.columnType === COLUMNTYPE.DATE"
+                    v-bind="attrs"
+                />
             </el-form-item>
         </el-form>
 
@@ -257,7 +261,9 @@ export default {
     line-height: 30px;
 }
 .el-select,
-.el-input-number,.el-cascader {
-    width: 100%;
+.el-input-number,
+.el-cascader,
+.el-date-editor {
+    width: 100% !important;
 }
 </style>

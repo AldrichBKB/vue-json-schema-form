@@ -129,6 +129,10 @@
                 v-if="formData.columnType === COLUMNTYPE.CASCADER"
                 v-model="formProps"
             />
+            <ComponentDatePicker
+                v-if="formData.columnType === COLUMNTYPE.DATE"
+                v-model="formProps"
+            />
         </div>
         <div class="schema_footer">
             <el-button
@@ -157,13 +161,15 @@ const ComponentInput = () => import('./Input/Input.vue');
 const ComponentInputNumber = () => import('./InputNumber/InputNumber.vue');
 const ComponentSelect = () => import('./Select/Select.vue');
 const ComponentCascader = () => import('./Cascader/Cascader.vue');
+const ComponentDatePicker = () => import('./DatePicker/DatePicker.vue');
 
 export default {
     components: {
         ComponentInput,
         ComponentInputNumber,
         ComponentSelect,
-        ComponentCascader
+        ComponentCascader,
+        ComponentDatePicker
     },
     data() {
         return {

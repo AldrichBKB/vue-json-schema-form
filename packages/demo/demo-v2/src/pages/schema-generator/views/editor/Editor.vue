@@ -231,8 +231,8 @@ export default {
             try {
                 const { data } = await getColumnPageHttp({
                     // formCode: 'FORM_WORK_ORDER_ADD',
-                    formCode: 'FORM_SALES_ORDER_ADD',
-                    // formCode: 'INVOICE_APPLICATION',
+                    // formCode: 'FORM_SALES_ORDER_ADD',
+                    formCode: 'INVOICE_APPLICATION',
                     pageDto: { page: 1, pageSize: 999 }
                 });
 
