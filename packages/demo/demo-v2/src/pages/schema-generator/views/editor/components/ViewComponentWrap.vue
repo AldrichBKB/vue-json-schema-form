@@ -77,12 +77,10 @@
 </template>
 
 <script>
-// import { globalOptions } from '@lljj/vue-json-schema-form';
 import emitter from '../../../mixins/emitter.js';
 import NestedEditor from './NestedEditor';
-// import { editorItem2SchemaFieldProps } from '../common/editorData';
 
-import { COLUMNTYPE } from '../viewComponentsNew/enums/processEnum';
+import { COLUMNTYPE } from '../viewComponents/enums/processEnum';
 
 export default {
     name: 'ViewComponentWrap',
@@ -122,12 +120,6 @@ export default {
             return this.editorItem && this.editorItem.props
                 ? JSON.parse(this.editorItem.props)
                 : {};
-            // return {
-
-            //     // formProps: this.formProps,
-            //     // globalOptions,
-            //     // ...editorItem2SchemaFieldProps(this.editorItem, this.formData)
-            // };
         }
     },
     beforeDestroy() {

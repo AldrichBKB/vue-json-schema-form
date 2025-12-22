@@ -9,14 +9,6 @@
             >
                 <div :class="$style.toolBarWrap">
                     <div :class="$style.toolsBar">
-                        <!-- <EditorToolBar
-                            :drag-group="dragOptions.group"
-                            :config-tools="configTools"
-                            @onFilter="
-                                $message.error('该组件添加数目已达上限！')
-                            "
-                        >
-                        </EditorToolBar> -->
                     </div>
                     <span
                         :class="$style.leftCaret"
@@ -38,7 +30,6 @@
                             [`layoutColumn-${formProps.layoutColumn}`]: !formProps.inline,
                             formInlineFooter: formProps.inlineFooter,
                             formInline: formProps.inline
-                            // [`genFromComponent_${schema.id}Form`]: !!schema.id,
                         }"
                     >
                         <NestedEditor
@@ -47,29 +38,6 @@
                             :form-data="rootFormData"
                             :form-props="formProps"
                         >
-                            <!-- <el-form-item
-                                v-if="
-                                    componentList.length > 0 && formFooter.show
-                                "
-                                :style="{
-                                    display:
-                                        formProps.inline &&
-                                        formProps.inlineFooter
-                                            ? 'inline-block'
-                                            : 'block'
-                                }"
-                                class="formFooter_item w100 formFooter_item-editor"
-                            >
-                                <el-button @click="$emit('onCancel')">
-                                    {{ formFooter.cancelBtn }}
-                                </el-button>
-                                <el-button
-                                    type="primary"
-                                    @click="$emit('onSubmit')"
-                                >
-                                    {{ formFooter.okBtn }}
-                                </el-button>
-                            </el-form-item> -->
                         </NestedEditor>
                     </el-form>
                     <div
@@ -86,40 +54,7 @@
                             name="compConfig"
                         >
                             <ViewComponents ref="viewComponentsRef" />
-                            <!-- <VueJsonFrom
-                                v-model="curEditorItem.componentValue"
-                                :class="$style.configForm"
-                                :schema="
-                                    curEditorItem.componentPack.propsSchema
-                                "
-                                :form-props="{
-                                    labelPosition: 'right',
-                                    labelWidth: '110px'
-                                }"
-                                :form-footer="{
-                                    show: false
-                                }"
-                            >
-                            </VueJsonFrom> -->
                         </el-tab-pane>
-                        <!-- <el-tab-pane
-                            label="表单配置"
-                            name="formConfig"
-                        >
-                            <VueJsonFrom
-                                v-model="formConfig"
-                                :class="$style.configForm"
-                                :schema="FormConfSchema"
-                                :form-props="{
-                                    labelPosition: 'right',
-                                    labelWidth: '110px'
-                                }"
-                                :form-footer="{
-                                    show: false
-                                }"
-                            >
-                            </VueJsonFrom>
-                        </el-tab-pane> -->
                     </el-tabs>
                 </div>
             </div>
@@ -128,30 +63,18 @@
 </template>
 
 <script>
-// import VueJsonFrom from '@lljj/vue-json-schema-form';
 import { getColumnPageHttp } from '@/api/common';
-import ViewComponents from './viewComponentsNew/genSchema.vue';
+import ViewComponents from './viewComponents/genSchema.vue';
 
 
-// import FormConfSchema from './viewComponents/FormConf';
-// import EditorToolBar from './EditorToolBar.vue';
-// deepFreeze
 import { deepCopy } from './common/utils';
-import configTools from './config/tools';
 import NestedEditor from './components/NestedEditor';
 
-// import {
-//     formatFormLabelWidth,
-// } from './common/editorData';
-
-// deepFreeze(configTools);
 
 export default {
     name: 'Editor',
     components: {
         ViewComponents,
-        // VueJsonFrom,
-        // EditorToolBar,
         NestedEditor
     },
     provide() {
@@ -165,11 +88,9 @@ export default {
         return {
             closeToolbar: false,
             loading: false,
-            configTools,
             rootFormData: {},
             curEditorItem: null, // 选中的formItem
             componentList: [],
-            // FormConfSchema,
             formConfig: {},
             activeName: 'compConfig',
 
@@ -181,13 +102,6 @@ export default {
         formProps() {
             return this.curEditorItem && this.curEditorItem.props ? JSON.parse(this.curEditorItem.props) : {};
 
-            // if (!this.formConfig.formProps) return {};
-            // return {
-            //     ...this.formConfig.formProps,
-            //     labelWidth: formatFormLabelWidth(
-            //         this.formConfig.formProps.labelWidth
-            //     )
-            // };
         },
         formFooter() {
             return this.formConfig.formFooter || {};
@@ -202,8 +116,6 @@ export default {
                 draggable: '.draggableItem',
                 tag: 'div',
                 swapThreshold: 0.3
-                // forceFallback: true
-                // fallbackTolerance: 0
             };
         }
     },
