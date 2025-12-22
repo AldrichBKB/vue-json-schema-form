@@ -9,6 +9,7 @@
             >
                 <div :class="$style.toolBarWrap">
                     <div :class="$style.toolsBar">
+                        <EditorList :component-list="componentList" />
                     </div>
                     <span
                         :class="$style.leftCaret"
@@ -64,18 +65,19 @@
 
 <script>
 import { getColumnPageHttp } from '@/api/common';
-import ViewComponents from './viewComponents/genSchema.vue';
-
-
 import { deepCopy } from './common/utils';
-import NestedEditor from './components/NestedEditor';
+
+import NestedEditor from './components/NestedEditor.vue';
+import ViewComponents from './viewComponents/genSchema.vue';
+import EditorList from './EditorList.vue';
 
 
 export default {
     name: 'Editor',
     components: {
         ViewComponents,
-        NestedEditor
+        NestedEditor,
+        EditorList
     },
     provide() {
         return {
@@ -93,8 +95,6 @@ export default {
             componentList: [],
             formConfig: {},
             activeName: 'compConfig',
-
-            columnList: []
         };
     },
 
@@ -127,8 +127,22 @@ export default {
         window.document.body.classList.remove('page-decorate-design');
     },
     created() {
-        this.$on('onSetCurEditorItem', ({ editorItem }) => {
-            // this.activeName = editorItem ? 'compConfig' : 'formConfig';
+        this.$on('onSetCurEditorItem', ({ editorItem, isEditorList = false, editorIndex }) => {
+            if (isEditorList) {
+                this.componentList[editorIndex].isEdit = true;
+                this.componentList.forEach((item, index) => {
+                    if (index !== editorIndex) {
+                        item.isEdit = false;
+                    }
+                });
+            } else {
+                this.componentList.forEach((item) => {
+                    if (editorItem.formCode !== item.formCode) {
+                        item.isEdit = false;
+                    }
+                });
+            }
+
             const newEditorItem = deepCopy(editorItem);
             newEditorItem.props = newEditorItem.props ? JSON.parse(newEditorItem.props) : {};
             this.curEditorItem = newEditorItem;
@@ -143,15 +157,15 @@ export default {
             this.loading = true;
             try {
                 const { data } = await getColumnPageHttp({
-                    // formCode: 'FORM_WORK_ORDER_ADD',
+                    formCode: 'FORM_WORK_ORDER_ADD',
                     // formCode: 'FORM_SALES_ORDER_ADD',
-                    formCode: 'FORM_SCM_BOM_ADD',
+                    // formCode: 'FORM_SCM_BOM_ADD',
                     pageDto: { page: 1, pageSize: 999 }
                 });
 
                 if (data.code === 200) {
-                    this.columnList = data.data.records;
-                    this.componentList = this.columnList.map(item => ({
+                    const columnList = data.data.records;
+                    this.componentList = columnList.map(item => ({
                         ...item,
                         isEdit: false
                     }));
@@ -181,7 +195,7 @@ body.page-decorate-design {
 <style module>
 @import "demo-common/css/variable.css";
 :root {
-    --tool-bar-width: 260px;
+    --tool-bar-width: 340px;
     --right-form-width: 380px;
     --drag-area-width: auto;
 }
@@ -235,8 +249,9 @@ body.page-decorate-design {
     height: 38px;
     align-items: center;
     justify-content: center;
-    top: 2px;
+    top: 50vh;
     right: 0;
+    z-index: 3;
     background: #ffffff;
     box-shadow: 0 0 4px 0 color(var(--color-black) a(0.2));
     border-radius: 2px 0 0 2px;
