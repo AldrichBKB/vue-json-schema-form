@@ -9,14 +9,14 @@
             >
                 <div :class="$style.toolBarWrap">
                     <div :class="$style.toolsBar">
-                        <EditorToolBar
+                        <!-- <EditorToolBar
                             :drag-group="dragOptions.group"
                             :config-tools="configTools"
                             @onFilter="
                                 $message.error('该组件添加数目已达上限！')
                             "
                         >
-                        </EditorToolBar>
+                        </EditorToolBar> -->
                     </div>
                     <span
                         :class="$style.leftCaret"
@@ -134,8 +134,9 @@ import ViewComponents from './viewComponentsNew/genSchema.vue';
 
 
 // import FormConfSchema from './viewComponents/FormConf';
-import EditorToolBar from './EditorToolBar.vue';
-import { deepFreeze, deepCopy } from './common/utils';
+// import EditorToolBar from './EditorToolBar.vue';
+// deepFreeze
+import { deepCopy } from './common/utils';
 import configTools from './config/tools';
 import NestedEditor from './components/NestedEditor';
 
@@ -143,14 +144,14 @@ import NestedEditor from './components/NestedEditor';
 //     formatFormLabelWidth,
 // } from './common/editorData';
 
-deepFreeze(configTools);
+// deepFreeze(configTools);
 
 export default {
     name: 'Editor',
     components: {
         ViewComponents,
         // VueJsonFrom,
-        EditorToolBar,
+        // EditorToolBar,
         NestedEditor
     },
     provide() {
@@ -232,7 +233,7 @@ export default {
                 const { data } = await getColumnPageHttp({
                     // formCode: 'FORM_WORK_ORDER_ADD',
                     // formCode: 'FORM_SALES_ORDER_ADD',
-                    formCode: 'INVOICE_APPLICATION',
+                    formCode: 'FORM_SCM_BOM_ADD',
                     pageDto: { page: 1, pageSize: 999 }
                 });
 
