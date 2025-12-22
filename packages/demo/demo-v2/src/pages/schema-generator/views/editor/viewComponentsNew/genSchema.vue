@@ -133,6 +133,10 @@
                 v-if="formData.columnType === COLUMNTYPE.DATE"
                 v-model="formProps"
             />
+            <ComponentUpload
+                v-if="formData.columnType === COLUMNTYPE.ATTACHMENT"
+                v-model="formProps"
+            />
         </div>
         <div class="schema_footer">
             <el-button
@@ -162,6 +166,7 @@ const ComponentInputNumber = () => import('./InputNumber/InputNumber.vue');
 const ComponentSelect = () => import('./Select/Select.vue');
 const ComponentCascader = () => import('./Cascader/Cascader.vue');
 const ComponentDatePicker = () => import('./DatePicker/DatePicker.vue');
+const ComponentUpload = () => import('./Upload/Upload.vue');
 
 export default {
     components: {
@@ -169,7 +174,8 @@ export default {
         ComponentInputNumber,
         ComponentSelect,
         ComponentCascader,
-        ComponentDatePicker
+        ComponentDatePicker,
+        ComponentUpload
     },
     data() {
         return {

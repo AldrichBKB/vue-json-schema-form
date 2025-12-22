@@ -51,6 +51,17 @@
                     v-if="editorItem.columnType === COLUMNTYPE.DATE"
                     v-bind="attrs"
                 />
+                <el-upload
+                    v-if="editorItem.columnType === COLUMNTYPE.ATTACHMENT"
+                    v-bind="attrs"
+                >
+                    <el-button
+                        size="small"
+                        type="primary"
+                    >
+                        点击上传
+                    </el-button>
+                </el-upload>
             </el-form-item>
         </el-form>
 
