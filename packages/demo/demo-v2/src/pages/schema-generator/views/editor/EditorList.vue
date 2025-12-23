@@ -3,6 +3,7 @@
         <el-table
             :data="componentList"
             stripe
+            row-key="id"
             height="98vh"
             style="width: 100%"
         >
@@ -16,7 +17,6 @@
                 prop="column"
                 label="字段名称key"
                 width="100"
-                align="center"
             />
             <el-table-column
                 prop="columnName"

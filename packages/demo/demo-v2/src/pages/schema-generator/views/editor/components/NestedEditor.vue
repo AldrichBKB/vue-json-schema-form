@@ -37,9 +37,6 @@
             >
             </ViewComponentWrap>
         </div>
-        <!-- <template slot="footer">
-            <slot></slot>
-        </template> -->
     </draggable>
 </template>
 

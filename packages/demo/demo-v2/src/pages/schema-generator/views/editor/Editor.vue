@@ -162,14 +162,14 @@ export default {
             this.loading = true;
             try {
                 const { data } = await getColumnPageHttp({
-                    formCode: 'FORM_WORK_ORDER_ADD',
+                    // formCode: 'FORM_WORK_ORDER_ADD',
                     // formCode: 'FORM_SALES_ORDER_ADD',
-                    // formCode: 'FORM_SCM_BOM_ADD',
+                    formCode: 'FORM_SCM_BOM_ADD',
                     pageDto: { page: 1, pageSize: 999 }
                 });
 
                 if (data.code === 200) {
-                    const columnList = data.data.records;
+                    const columnList = data.data;
                     this.componentList = columnList.map(item => ({
                         ...item,
                         isEdit: false

@@ -16,6 +16,7 @@
             label-width="140px"
             size="small"
             label-suffix=":"
+            :model="formValue"
             :style="{ marginTop: '10px' }"
         >
             <el-form-item
@@ -24,12 +25,14 @@
             >
                 <el-input
                     v-if="editorItem.columnType === COLUMNTYPE.INPUT"
+                    v-model="formValue[editorItem.column]"
                     v-bind="attrs"
                     autosize
                 >
                 </el-input>
                 <el-input-number
                     v-if="editorItem.columnType === COLUMNTYPE.NUMBER"
+                    v-model="formValue[editorItem.column]"
                     v-bind="attrs"
                     autosize
                 >
@@ -40,19 +43,23 @@
                             editorItem.columnType
                         )
                     "
+                    v-model="formValue[editorItem.column]"
                     v-bind="attrs"
                 >
                 </el-select>
                 <el-cascader
                     v-if="editorItem.columnType === COLUMNTYPE.CASCADER"
+                    v-model="formValue[editorItem.column]"
                     v-bind="attrs"
                 />
                 <el-date-picker
                     v-if="editorItem.columnType === COLUMNTYPE.DATE"
+                    v-model="formValue[editorItem.column]"
                     v-bind="attrs"
                 />
                 <el-upload
                     v-if="editorItem.columnType === COLUMNTYPE.ATTACHMENT"
+                    v-model="formValue[editorItem.column]"
                     v-bind="attrs"
                 >
                     <el-button
@@ -64,6 +71,81 @@
                 </el-upload>
             </el-form-item>
         </el-form>
+
+        <el-table
+            v-if="editorItem.columnType === COLUMNTYPE.SUBTABLE"
+            ref="tableRef"
+            :data="[{}]"
+            stripe
+            default-expand-all
+            v-bind="attrs"
+            @row-drag-start="syncScroll"
+            @row-drag-end="syncScroll"
+        >
+            <el-table-column
+                v-for="(sitem, sindex) in columnSort(editorItem.children)"
+                :key="sindex"
+                align="center"
+                :prop="sitem.column"
+                :label="sitem.columnName"
+                :width="columnPropsCom(sitem.props).width || 240"
+                :fixed="columnPropsCom(sitem.props).fixed "
+            >
+                <template slot-scope="{ row }">
+                    <el-input
+                        v-if="sitem.columnType === COLUMNTYPE.INPUT"
+                        v-model="row[sitem.column]"
+                        size="small"
+                        v-bind="attrs"
+                        autosize
+                    >
+                    </el-input>
+                    <el-input-number
+                        v-if="sitem.columnType === COLUMNTYPE.NUMBER"
+                        v-model="row[sitem.column]"
+                        size="small"
+                        v-bind="attrs"
+                        autosize
+                    >
+                    </el-input-number>
+                    <el-select
+                        v-if="
+                            [COLUMNTYPE.SELECT, COLUMNTYPE.DEPARTMENT].includes(
+                                sitem.columnType
+                            )
+                        "
+                        v-model="row[sitem.column]"
+                        size="small"
+                        v-bind="attrs"
+                    >
+                    </el-select>
+                    <el-cascader
+                        v-if="sitem.columnType === COLUMNTYPE.CASCADER"
+                        v-model="row[sitem.column]"
+                        size="small"
+                        v-bind="attrs"
+                    />
+                    <el-date-picker
+                        v-if="sitem.columnType === COLUMNTYPE.DATE"
+                        v-model="row[sitem.column]"
+                        v-bind="attrs"
+                    />
+                    <el-upload
+                        v-if="sitem.columnType === COLUMNTYPE.ATTACHMENT"
+                        v-model="row[sitem.column]"
+                        size="small"
+                        v-bind="attrs"
+                    >
+                        <el-button
+                            size="small"
+                            type="primary"
+                        >
+                            点击上传
+                        </el-button>
+                    </el-upload>
+                </template>
+            </el-table-column>
+        </el-table>
 
         <NestedEditor
             v-if="showNestedEditor(editorItem)"
@@ -112,7 +194,8 @@ export default {
     },
     data() {
         return {
-            COLUMNTYPE
+            COLUMNTYPE,
+            formValue: {}
         };
     },
     computed: {
@@ -120,12 +203,44 @@ export default {
             return this.editorItem && this.editorItem.props
                 ? JSON.parse(this.editorItem.props)
                 : {};
-        }
+        },
+        columnPropsCom() {
+            return val => (val ? JSON.parse(val) : {});
+        },
+        columnSort() {
+            return arr => (
+                Object.entries(arr)
+                    .map(([key, value]) => ({ key, ...value }))
+                    .sort((a, b) => a.sort - b.sort) || []
+            );
+        },
     },
     beforeDestroy() {
         this.hideEditForm();
     },
     methods: {
+        syncScroll() {
+            // 获取主表格的滚动容器
+            const mainBodyWrapper = this.$refs.tableRef.$el.querySelector(
+                '.el-table__body-wrapper'
+            );
+
+            // 获取固定列的滚动容器
+            const fixedLeft = this.$refs.tableRef.$el.querySelector(
+                '.el-table__fixed .el-table__body-wrapper'
+            );
+            const fixedRight = this.$refs.tableRef.$el.querySelector(
+                '.el-table__fixed-right .el-table__body-wrapper'
+            );
+
+            // 同步滚动位置
+            if (fixedLeft && mainBodyWrapper) {
+                fixedLeft.scrollTop = mainBodyWrapper.scrollTop;
+            }
+            if (fixedRight && mainBodyWrapper) {
+                fixedRight.scrollTop = mainBodyWrapper.scrollTop;
+            }
+        },
         // 点击只能打开，并且打开状态下只能执行一次
         handleClickView(e) {
             // 阻止浏览器默认事件
