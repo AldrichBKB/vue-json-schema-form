@@ -86,6 +86,10 @@
                         placeholder="请选择"
                     >
                         <el-option
+                            label="占位1/1"
+                            :value="24"
+                        />
+                        <el-option
                             label="占位1/2"
                             :value="12"
                         />
@@ -137,6 +141,10 @@
                 v-if="formData.columnType === COLUMNTYPE.ATTACHMENT"
                 v-model="formProps"
             />
+            <ComponentSubTable
+                v-if="formData.columnType === COLUMNTYPE.SUBTABLE"
+                :editor-item="editorItem"
+            />
         </div>
         <div
             v-if="editorItem && Object.keys(editorItem).length"
@@ -171,6 +179,7 @@ const ComponentSelect = () => import('./Select/Select.vue');
 const ComponentCascader = () => import('./Cascader/Cascader.vue');
 const ComponentDatePicker = () => import('./DatePicker/DatePicker.vue');
 const ComponentUpload = () => import('./Upload/Upload.vue');
+const ComponentSubTable = () => import('./SubTable/SubTable.vue');
 
 export default {
     components: {
@@ -179,7 +188,8 @@ export default {
         ComponentSelect,
         ComponentCascader,
         ComponentDatePicker,
-        ComponentUpload
+        ComponentUpload,
+        ComponentSubTable
     },
     data() {
         return {
@@ -212,6 +222,8 @@ export default {
     },
     methods: {
         setData(row = {}) {
+            console.log(row);
+
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
             this.formProps = { ...formDefaults(this.editorItem.columnType), ...props || {} };
@@ -219,12 +231,7 @@ export default {
             this.formData = row;
         },
         handelSave() {
-            // this.$emit('save', {
-            //     formProps: this.formProps,
-            //     formData: this.formData
-            // });
-
-            console.log({
+            this.$emit('save', {
                 formProps: this.formProps,
                 formData: this.formData
             });

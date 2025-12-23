@@ -54,7 +54,10 @@
                             label="组件配置"
                             name="compConfig"
                         >
-                            <ViewComponents ref="viewComponentsRef" />
+                            <ViewComponents
+                                ref="viewComponentsRef"
+                                @save="handelSave"
+                            />
                         </el-tab-pane>
                     </el-tabs>
                 </div>
@@ -158,6 +161,9 @@ export default {
     },
 
     methods: {
+        handelSave(columnInfo) {
+            console.log(columnInfo);
+        },
         async getColumnPage() {
             this.loading = true;
             try {
@@ -182,7 +188,9 @@ export default {
         },
 
 
-    }
+    },
+
+
 };
 </script>
 

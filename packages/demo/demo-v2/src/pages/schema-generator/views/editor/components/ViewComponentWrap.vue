@@ -45,6 +45,7 @@
                     "
                     v-model="formValue[editorItem.column]"
                     v-bind="attrs"
+                    @focus="handleClickView"
                 >
                 </el-select>
                 <el-cascader
@@ -219,6 +220,7 @@ export default {
         this.hideEditForm();
     },
     methods: {
+
         syncScroll() {
             // 获取主表格的滚动容器
             const mainBodyWrapper = this.$refs.tableRef.$el.querySelector(
@@ -243,8 +245,10 @@ export default {
         },
         // 点击只能打开，并且打开状态下只能执行一次
         handleClickView(e) {
-            // 阻止浏览器默认事件
-            e.stopPropagation();
+            if (e) {
+                // 阻止浏览器默认事件
+                e.stopPropagation();
+            }
             if (!this.editorItem.isEdit) {
                 this.showEditForm();
             } else {
