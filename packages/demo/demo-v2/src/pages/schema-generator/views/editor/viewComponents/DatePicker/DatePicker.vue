@@ -5,20 +5,20 @@
             ref="formRef"
             size="small"
             label-suffix=":"
-            :model="formProps"
+            :model="value"
             label-width="auto"
         >
             <el-form-item
                 label="占位符"
                 prop="placeholder"
             >
-                <el-input v-model="formProps.placeholder"></el-input>
+                <el-input v-model="value.placeholder"></el-input>
             </el-form-item>
             <el-form-item
                 label="类型"
                 prop="type"
             >
-                <el-select v-model="formProps.type">
+                <el-select v-model="value.type">
                     <el-option
                         v-for="item in typeOptions"
                         :key="item.value"
@@ -31,7 +31,7 @@
                 label="数据值格式"
                 prop="value-format"
             >
-                <el-input v-model="formProps['value-format']"></el-input>
+                <el-input v-model="value['value-format']"></el-input>
             </el-form-item>
         </el-form>
     </div>
@@ -75,20 +75,7 @@ export default {
             ]
         };
     },
-    computed: {
-        formProps() {
-            const DEFAULTS = {
-                placeholder: '请选择',
-                type: 'date',
-                'value-format': 'yyyy-MM-dd'
-            };
-            const values = this.value || {};
-            return {
-                ...DEFAULTS,
-                ...values
-            };
-        }
-    },
+
 };
 </script>
 

@@ -138,7 +138,10 @@
                 v-model="formProps"
             />
         </div>
-        <div class="schema_footer">
+        <div
+            v-if="editorItem && Object.keys(editorItem).length"
+            class="schema_footer"
+        >
             <el-button
                 size="small"
                 @click="handelCancel"
@@ -160,6 +163,7 @@
 import { getColumnTypeHttp } from '@/api/common';
 import { COLUMNTYPE } from './enums/processEnum';
 import { deepCopy } from '../common/utils';
+import { formDefaults } from '../data';
 
 const ComponentInput = () => import('./Input/Input.vue');
 const ComponentInputNumber = () => import('./InputNumber/InputNumber.vue');
@@ -210,12 +214,17 @@ export default {
         setData(row = {}) {
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
-            this.formProps = props || {};
+            this.formProps = { ...formDefaults(this.editorItem.columnType), ...props || {} };
             delete row.props;
             this.formData = row;
         },
         handelSave() {
-            this.$emit('save', {
+            // this.$emit('save', {
+            //     formProps: this.formProps,
+            //     formData: this.formData
+            // });
+
+            console.log({
                 formProps: this.formProps,
                 formData: this.formData
             });

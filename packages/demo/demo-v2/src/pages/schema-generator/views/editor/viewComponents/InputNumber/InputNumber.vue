@@ -4,21 +4,21 @@
         <el-form
             ref="formRef"
             size="small"
-            :model="formProps"
+            :model="value"
             label-width="auto"
         >
             <el-form-item
                 label="占位符"
                 prop="placeholder"
             >
-                <el-input v-model="formProps.placeholder"></el-input>
+                <el-input v-model="value.placeholder"></el-input>
             </el-form-item>
             <el-form-item
                 label="最大数"
                 prop="max"
             >
                 <el-input-number
-                    v-model="formProps.max"
+                    v-model="value.max"
                     :precision="0"
                 />
             </el-form-item>
@@ -27,7 +27,7 @@
                 prop="min"
             >
                 <el-input-number
-                    v-model="formProps.min"
+                    v-model="value.min"
                     :precision="0"
                 />
             </el-form-item>
@@ -36,7 +36,7 @@
                 prop="precision"
             >
                 <el-input-number
-                    v-model="formProps.precision"
+                    v-model="value.precision"
                     :min="0"
                     :precision="0"
                 />
@@ -45,19 +45,19 @@
                 label="前缀"
                 prop="prefix"
             >
-                <el-input v-model="formProps.prefix"></el-input>
+                <el-input v-model="value.prefix"></el-input>
             </el-form-item>
             <el-form-item
                 label="后缀"
                 prop="suffix"
             >
-                <el-input v-model="formProps.suffix"></el-input>
+                <el-input v-model="value.suffix"></el-input>
             </el-form-item>
             <el-form-item
                 label="是否是金额"
                 prop="isAmount"
             >
-                <el-radio-group v-model="formProps.isAmount">
+                <el-radio-group v-model="value.isAmount">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                 </el-radio-group>
@@ -74,24 +74,6 @@ export default {
             default: () => ({})
         }
     },
-    computed: {
-        formProps() {
-            const DEFAULTS = {
-                placeholder: '请输入',
-                max: undefined,
-                min: undefined,
-                precision: 0,
-                prefix: '',
-                suffix: '',
-                isAmount: false
-            };
-            const values = this.value || {};
-            return {
-                ...DEFAULTS,
-                ...values
-            };
-        }
-    }
 };
 </script>
 

@@ -5,21 +5,21 @@
             ref="formRef"
             size="small"
             label-suffix=":"
-            :model="formProps"
+            :model="value"
             label-width="auto"
         >
             <el-form-item
                 label="占位符"
                 prop="placeholder"
             >
-                <el-input v-model="formProps.placeholder"></el-input>
+                <el-input v-model="value.placeholder"></el-input>
             </el-form-item>
             <el-form-item
                 label="最大上传数"
                 prop="limit"
             >
                 <el-input-number
-                    v-model="formProps.limit"
+                    v-model="value.limit"
                     :precision="0"
                     :min="1"
                 />
@@ -30,7 +30,7 @@
                 prop="accept"
             >
                 <el-input
-                    v-model="formProps.accept"
+                    v-model="value.accept"
                     type="textarea"
                     autosize
                 />
@@ -47,21 +47,6 @@ export default {
             default: () => ({})
         }
     },
-
-    computed: {
-        formProps() {
-            const DEFAULTS = {
-                placeholder: '请上传',
-                limit: 20,
-                accept: '.jpeg,.jpg,.png,.bmp,.tiff,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.zip,.7z,.rar'
-            };
-            const values = this.value || {};
-            return {
-                ...DEFAULTS,
-                ...values
-            };
-        }
-    }
 };
 </script>
 

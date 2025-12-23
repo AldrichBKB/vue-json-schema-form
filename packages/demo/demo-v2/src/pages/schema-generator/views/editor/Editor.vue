@@ -100,8 +100,10 @@ export default {
 
     computed: {
         formProps() {
-            return this.curEditorItem && this.curEditorItem.props ? JSON.parse(this.curEditorItem.props) : {};
-
+            if (this.curEditorItem && this.curEditorItem.props) {
+                return typeof this.curEditorItem.props === 'string' ? JSON.parse(this.curEditorItem.props) : this.curEditorItem.props;
+            }
+            return {};
         },
         formFooter() {
             return this.formConfig.formFooter || {};
@@ -137,17 +139,20 @@ export default {
                 });
             } else {
                 this.componentList.forEach((item) => {
-                    if (editorItem.formCode !== item.formCode) {
+                    if (editorItem && editorItem.column !== item.column) {
                         item.isEdit = false;
                     }
                 });
             }
 
-            const newEditorItem = deepCopy(editorItem);
-            newEditorItem.props = newEditorItem.props ? JSON.parse(newEditorItem.props) : {};
+            const newEditorItem = deepCopy(editorItem || {});
+            if (newEditorItem && newEditorItem.props) {
+                newEditorItem.props = typeof newEditorItem.props === 'string' ? JSON.parse(newEditorItem.props) : newEditorItem.props;
+            } else {
+                newEditorItem.props = {};
+            }
             this.curEditorItem = newEditorItem;
             this.$refs.viewComponentsRef.setData(this.curEditorItem);
-
         });
         this.getColumnPage();
     },

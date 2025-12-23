@@ -5,21 +5,21 @@
             ref="formRef"
             size="small"
             label-suffix=":"
-            :model="formProps"
+            :model="value"
             label-width="auto"
         >
             <el-form-item
                 label="占位符"
                 prop="placeholder"
             >
-                <el-input v-model="formProps.placeholder"></el-input>
+                <el-input v-model="value.placeholder"></el-input>
             </el-form-item>
             <el-form-item
                 label="最大输入长度"
                 prop="maxlength"
             >
                 <el-input-number
-                    v-model="formProps.maxlength"
+                    v-model="value.maxlength"
                     :min="1"
                     :max="2000"
                     :precision="0"
@@ -29,13 +29,13 @@
                 label="前缀"
                 prop="prefix"
             >
-                <el-input v-model="formProps.prefix"></el-input>
+                <el-input v-model="value.prefix"></el-input>
             </el-form-item>
             <el-form-item
                 label="后缀"
                 prop="suffix"
             >
-                <el-input v-model="formProps.suffix"></el-input>
+                <el-input v-model="value.suffix"></el-input>
             </el-form-item>
         </el-form>
     </div>
@@ -49,22 +49,6 @@ export default {
             default: () => ({})
         }
     },
-    computed: {
-        formProps() {
-            const DEFAULTS = {
-                placeholder: '请输入',
-                type: 'textarea',
-                maxlength: 500,
-                prefix: '',
-                suffix: ''
-            };
-            const values = this.value || {};
-            return {
-                ...DEFAULTS,
-                ...values
-            };
-        }
-    }
 };
 </script>
 

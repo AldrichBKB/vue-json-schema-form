@@ -5,20 +5,20 @@
             ref="formRef"
             size="small"
             label-suffix=":"
-            :model="formProps"
+            :model="value"
             label-width="auto"
         >
             <el-form-item
                 label="占位符"
                 prop="placeholder"
             >
-                <el-input v-model="formProps.placeholder"></el-input>
+                <el-input v-model="value.placeholder"></el-input>
             </el-form-item>
             <el-form-item
                 label="是否多选"
                 prop="multiple"
             >
-                <el-radio-group v-model="formProps.multiple">
+                <el-radio-group v-model="value.multiple">
                     <el-radio :label="true">是</el-radio>
                     <el-radio :label="false">否</el-radio>
                 </el-radio-group>
@@ -35,19 +35,6 @@ export default {
             default: () => ({})
         }
     },
-    computed: {
-        formProps() {
-            const DEFAULTS = {
-                placeholder: '请选择',
-                multiple: false,
-            };
-            const values = this.value || {};
-            return {
-                ...DEFAULTS,
-                ...values
-            };
-        }
-    }
 };
 </script>
 
