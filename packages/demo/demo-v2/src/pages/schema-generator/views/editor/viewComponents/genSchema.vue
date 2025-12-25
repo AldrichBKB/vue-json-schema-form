@@ -1,5 +1,5 @@
 <template>
-    <div class="schema-warpper">
+    <div :style="{ height: isDialog ? 'auto' : 'calc(100vh - 74px)' }">
         <div class="schema-content">
             <div class="sub_title">基础配置</div>
             <el-form
@@ -17,6 +17,7 @@
                     <el-input
                         v-model="formData.column"
                         placeholder="请输入"
+                        @change="handelColumnChange"
                     />
                 </el-form-item>
                 <el-form-item
@@ -26,6 +27,7 @@
                     <el-input
                         v-model="formData.columnName"
                         placeholder="请输入"
+                        @change="handelColumnChange"
                     />
                 </el-form-item>
                 <el-form-item
@@ -35,10 +37,16 @@
                     <el-select
                         v-model="formData.columnType"
                         :style="{ width: '100%' }"
+                        filterable
                         placeholder="请选择"
+                        @change="
+                            () => {
+                                handelColumnChange(), handelColumnTypeChange();
+                            }
+                        "
                     >
                         <el-option
-                            v-for="item in columnTypeOptions"
+                            v-for="item in columnTypeOptionsCom"
                             :key="item.code"
                             :label="item.code"
                             :value="item.code"
@@ -54,6 +62,7 @@
                         type="textarea"
                         autosize
                         placeholder="请输入"
+                        @change="handelColumnChange"
                     />
                 </el-form-item>
                 <el-form-item
@@ -65,18 +74,24 @@
                         type="textarea"
                         autosize
                         placeholder="请输入"
+                        @change="handelColumnChange"
                     />
                 </el-form-item>
                 <el-form-item
+                    v-if="!isDialog"
                     label="是否是主要内容"
                     prop="point"
                 >
-                    <el-radio-group v-model="formData.point">
+                    <el-radio-group
+                        v-model="formData.point"
+                        @change="handelColumnChange"
+                    >
                         <el-radio :label="0">否</el-radio>
                         <el-radio :label="1">是</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item
+                    v-if="!isDialog"
                     label="占位"
                     prop="placeholder"
                 >
@@ -84,6 +99,7 @@
                         v-model="formData.placeholder"
                         :style="{ width: '100%' }"
                         placeholder="请选择"
+                        @change="handelColumnChange"
                     >
                         <el-option
                             label="占位1/1"
@@ -106,6 +122,7 @@
                 <el-form-item
                     label="展示条件"
                     prop="visibilityRule"
+                    @change="handelColumnChange"
                 >
                     <el-input
                         v-model="formData.visibilityRule"
@@ -144,18 +161,14 @@
             <ComponentSubTable
                 v-if="formData.columnType === COLUMNTYPE.SUBTABLE"
                 :editor-item="editorItem"
+                :component-list="componentList"
+                @change="handelSubTableChange"
             />
         </div>
         <div
             v-if="editorItem && Object.keys(editorItem).length"
             class="schema_footer"
         >
-            <el-button
-                size="small"
-                @click="handelCancel"
-            >
-                取 消
-            </el-button>
             <el-button
                 size="small"
                 type="primary"
@@ -170,7 +183,7 @@
 <script>
 import { getColumnTypeHttp } from '@/api/common';
 import { COLUMNTYPE } from './enums/processEnum';
-import { deepCopy } from '../common/utils';
+import { deepCopy, flattenTree } from '../common/utils';
 import { formDefaults } from '../data';
 
 const ComponentInput = () => import('./Input/Input.vue');
@@ -191,7 +204,31 @@ export default {
         ComponentUpload,
         ComponentSubTable
     },
+    props: {
+        isDialog: {
+            type: Boolean,
+            default: () => false
+        },
+        componentList: {
+            type: Array,
+            default: () => []
+        }
+    },
     data() {
+        const validateColumn = (_rule, value, callback) => {
+            if (!value) {
+                callback(new Error('请输入'));
+            } else {
+                const newList = flattenTree(this.componentList);
+                if (
+                    newList.filter(item => item.column === value).length
+                    > (this.isDialog ? 0 : 1)
+                ) {
+                    callback(new Error('字段名称Key只能唯一'));
+                }
+                callback();
+            }
+        };
         return {
             COLUMNTYPE,
             formData: {
@@ -205,7 +242,13 @@ export default {
                 visibilityRule: ''
             },
             rules: {
-                column: [{ required: true, message: '请输入' }],
+                column: [
+                    {
+                        validator: validateColumn,
+                        required: true,
+                        trigger: 'blur'
+                    }
+                ],
                 columnName: [{ required: true, message: '请输入' }],
                 columnType: [{ required: true, message: '请选择' }],
                 point: [{ required: true, message: '请选择' }],
@@ -216,32 +259,72 @@ export default {
             editorItem: {}
         };
     },
+    computed: {
+        columnTypeOptionsCom() {
+            if (this.isDialog) {
+                return this.columnTypeOptions.filter(
+                    item => item.code !== COLUMNTYPE.SUBTABLE
+                );
+            }
+            return this.columnTypeOptions;
+        }
+    },
+
     async mounted() {
         const { data } = await getColumnTypeHttp();
         this.columnTypeOptions = data.data;
     },
     methods: {
         setData(row = {}) {
-            console.log(row);
-
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
-            this.formProps = { ...formDefaults(this.editorItem.columnType), ...props || {} };
+            this.formProps = {
+                ...formDefaults(this.editorItem.columnType),
+                ...(props || {})
+            };
             delete row.props;
             this.formData = row;
         },
-        handelSave() {
-            this.$emit('save', {
+        reset() {
+            this.formData = {
+                column: '',
+                columnName: '',
+                columnType: '',
+                dataLink: '',
+                columnDatas: '',
+                point: 0,
+                placeholder: 12,
+                visibilityRule: ''
+            };
+            this.formProps = {};
+            this.$refs.formRef.resetFields();
+        },
+        checkForm() {
+            let flag = true;
+            this.$refs.formRef.validate((valid) => {
+                flag = valid;
+            });
+            return flag;
+        },
+        getFormData() {
+            return {
+                props: JSON.stringify(this.formProps),
+                ...this.formData
+            };
+        },
+        handelSubTableChange() {
+
+        },
+        handelColumnTypeChange() {
+            this.formProps = {
+                ...formDefaults(this.formData.columnType)
+            };
+        },
+        handelColumnChange() {
+            this.$emit('change', {
                 formProps: this.formProps,
                 formData: this.formData
             });
-        },
-        handelCancel() {
-            const row = deepCopy(this.editorItem);
-            const { props } = deepCopy(row);
-            this.formProps = props || {};
-            delete row.props;
-            this.formData = row;
         }
     }
 };
@@ -265,12 +348,11 @@ export default {
     border-radius: 4px;
     margin-right: 8px;
 }
-.schema-warpper {
-    height: calc(100vh - 74px);
-}
+
 .schema-content {
     height: calc(100% - 60px);
     overflow-y: auto;
+    overflow-x: hidden;
 }
 .schema_footer {
     border-top: 1px solid #f5f5f5;

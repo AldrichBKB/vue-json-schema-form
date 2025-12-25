@@ -8,6 +8,7 @@
         @click="handleClickView"
     >
         <!-- <span :class="$style.formProperty"> {{ attrs.curNodePath }}</span> -->
+
         <p :class="$style.formProperty">
             {{ editorItem.column }}
         </p>

@@ -48,3 +48,21 @@ export function deepCopy(obj) {
 
     return copy;
 }
+
+// 数组扁平化
+export function flattenTree(treeData, childrenKey = 'children') {
+    const result = [];
+    function flatten(nodes) {
+        nodes.forEach((node) => {
+            const flatNode = { ...node };
+            delete flatNode[childrenKey];
+            result.push(flatNode);
+            if (node[childrenKey] && node[childrenKey].length) {
+                flatten(node[childrenKey]);
+            }
+        });
+    }
+
+    flatten(treeData);
+    return result;
+}

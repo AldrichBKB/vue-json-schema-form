@@ -1,6 +1,25 @@
 <template>
     <div>
-        <div class="sub_title">子表配置</div>
+        <div
+            :style="{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+            }"
+        >
+            <div class="sub_title">
+                <span>子表配置</span>
+            </div>
+            <el-button
+                :style="{ marginBottom: '20px' }"
+                size="mini"
+                type="primary"
+                @click="handelAdd"
+            >
+                新 增
+            </el-button>
+        </div>
+
         <el-table
             :data="editorItem.children"
             stripe
@@ -33,11 +52,11 @@
                 label="操作"
                 align="center"
             >
-                <template slot-scope="{ row,$index }">
+                <template slot-scope="{ row, $index }">
                     <el-button
                         type="text"
                         size="small"
-                        @click="handelEdit(row,$index)"
+                        @click="handelEdit(row, $index)"
                     >
                         编辑
                     </el-button>
@@ -52,19 +71,81 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-dialog
+            :title="subItemAid ? '修改' : '新增'"
+            top="5vh"
+            center
+            append-to-body
+            :visible="visible"
+            @close="handelClose"
+        >
+            <div
+                :style="{
+                    maxHeight: '70vh',
+                    overflowY: 'auto'
+                }"
+            >
+                <ViewComponents
+                    ref="viewComponentsRef"
+                    :component-list="componentList"
+                    is-dialog
+                />
+            </div>
+            <div slot="footer">
+                <el-button
+                    size="mini"
+                    @click="visible = false"
+                >
+                    取 消
+                </el-button>
+                <el-button
+                    type="primary"
+                    size="mini"
+                    @click="handelSave"
+                >
+                    确 定
+                </el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+const ViewComponents = () => import('../genSchema.vue');
+
 export default {
+    components: {
+        ViewComponents
+    },
     props: {
         editorItem: {
             type: Object,
             default: () => ({})
-        }
+        },
+        componentList: {
+            type: Array,
+            default: () => []
+        },
     },
-
+    data() {
+        return {
+            visible: false,
+            subItemAid: null
+        };
+    },
+    methods: {
+        handelAdd() {
+            this.visible = true;
+        },
+        handelSave() {
+            const valid = this.$refs.viewComponentsRef.checkForm();
+            if (valid) {
+                this.$refs.viewComponentsRef.getFormData();
+            }
+        },
+        handelClose() {
+            this.$refs.viewComponentsRef.reset();
+        }
+    }
 };
 </script>
-
-<style scoped lang="scss"></style>
