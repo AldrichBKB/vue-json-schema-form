@@ -23,7 +23,7 @@
         <el-table
             :data="editorItem.children"
             stripe
-            row-key="id"
+            row-key="column"
             style="width: 100%"
         >
             <el-table-column
@@ -64,7 +64,7 @@
                         type="text"
                         size="small"
                         :style="{ color: '#ee0b0b', marginLeft: '8px' }"
-                        @click="handelDelete(row)"
+                        @click="handelDelete(row, $index)"
                     >
                         删除
                     </el-button>
@@ -74,6 +74,7 @@
         <el-dialog
             :title="subItemAid ? '修改' : '新增'"
             top="5vh"
+            width="30%"
             center
             append-to-body
             :visible="visible"
@@ -88,7 +89,7 @@
                 <ViewComponents
                     ref="viewComponentsRef"
                     :component-list="componentList"
-                    is-dialog
+                    is-sub-table
                 />
             </div>
             <div slot="footer">
@@ -137,10 +138,24 @@ export default {
         handelAdd() {
             this.visible = true;
         },
+        handelDelete(index) {
+            this.$confirm('是否确认删除此字段?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+            });
+        },
         handelSave() {
             const valid = this.$refs.viewComponentsRef.checkForm();
+            const formData = this.$refs.viewComponentsRef.getFormData();
             if (valid) {
-                this.$refs.viewComponentsRef.getFormData();
+                this.$emit('change', this.editorItem.column, formData);
+                this.visible = false;
             }
         },
         handelClose() {

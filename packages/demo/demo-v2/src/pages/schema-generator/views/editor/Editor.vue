@@ -165,7 +165,7 @@ export default {
         handelColumnChange(columnInfo) {
             const { formData, formProps } = columnInfo;
             this.componentList.forEach((item, index) => {
-                if (formData && formData.id === item.id) {
+                if (formData && formData.column === item.column) {
                     this.$set(this.componentList, index, {
                         ...formData,
                         props: JSON.stringify(formProps)

@@ -3,7 +3,7 @@
         <el-table
             :data="componentList"
             stripe
-            row-key="id"
+            row-key="column"
             height="98vh"
             style="width: 100%"
         >

@@ -1,5 +1,5 @@
 <template>
-    <div :style="{ height: isDialog ? 'auto' : 'calc(100vh - 74px)' }">
+    <div :style="{ height: isSubTable ? 'auto' : 'calc(100vh - 74px)' }">
         <div class="schema-content">
             <div class="sub_title">基础配置</div>
             <el-form
@@ -77,48 +77,82 @@
                         @change="handelColumnChange"
                     />
                 </el-form-item>
-                <el-form-item
-                    v-if="!isDialog"
-                    label="是否是主要内容"
-                    prop="point"
-                >
-                    <el-radio-group
-                        v-model="formData.point"
-                        @change="handelColumnChange"
+                <div v-if="isSubTable">
+                    <el-form-item
+                        label="字段顺序"
+                        prop="sort"
                     >
-                        <el-radio :label="0">否</el-radio>
-                        <el-radio :label="1">是</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item
-                    v-if="!isDialog"
-                    label="占位"
-                    prop="placeholder"
-                >
-                    <el-select
-                        v-model="formData.placeholder"
-                        :style="{ width: '100%' }"
-                        placeholder="请选择"
-                        @change="handelColumnChange"
+                        <el-input-number
+                            v-model="formData.sort"
+                            :min="0"
+                            :precision="0"
+                        />
+                    </el-form-item>
+                    <el-form-item
+                        label="字段列是否固定"
                     >
-                        <el-option
-                            label="占位1/1"
-                            :value="24"
-                        />
-                        <el-option
-                            label="占位1/2"
-                            :value="12"
-                        />
-                        <el-option
-                            label="占位1/3"
-                            :value="8"
-                        />
-                        <el-option
-                            label="占位1/4"
-                            :value="6"
-                        />
-                    </el-select>
-                </el-form-item>
+                        <el-select
+                            v-model="formProps.fixed"
+                            :style="{ width: '100%' }"
+                            placeholder="请选择"
+                        >
+                            <el-option
+                                label="不固定"
+                                :value="false"
+                            />
+                            <el-option
+                                label="固定左侧"
+                                value="left"
+                            />
+                            <el-option
+                                label="固定右侧"
+                                value="right"
+                            />
+                        </el-select>
+                    </el-form-item>
+                </div>
+                <div v-else>
+                    <el-form-item
+                        label="是否是主要内容"
+                        prop="point"
+                    >
+                        <el-radio-group
+                            v-model="formData.point"
+                            @change="handelColumnChange"
+                        >
+                            <el-radio :label="0">否</el-radio>
+                            <el-radio :label="1">是</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item
+                        label="占位"
+                        prop="placeholder"
+                    >
+                        <el-select
+                            v-model="formData.placeholder"
+                            :style="{ width: '100%' }"
+                            placeholder="请选择"
+                            @change="handelColumnChange"
+                        >
+                            <el-option
+                                label="占位1/1"
+                                :value="24"
+                            />
+                            <el-option
+                                label="占位1/2"
+                                :value="12"
+                            />
+                            <el-option
+                                label="占位1/3"
+                                :value="8"
+                            />
+                            <el-option
+                                label="占位1/4"
+                                :value="6"
+                            />
+                        </el-select>
+                    </el-form-item>
+                </div>
                 <el-form-item
                     label="展示条件"
                     prop="visibilityRule"
@@ -161,7 +195,7 @@
             <ComponentSubTable
                 v-if="formData.columnType === COLUMNTYPE.SUBTABLE"
                 :editor-item="editorItem"
-                :component-list="componentList"
+                :component-list="localComponentList"
                 @change="handelSubTableChange"
             />
         </div>
@@ -205,7 +239,7 @@ export default {
         ComponentSubTable
     },
     props: {
-        isDialog: {
+        isSubTable: {
             type: Boolean,
             default: () => false
         },
@@ -219,10 +253,10 @@ export default {
             if (!value) {
                 callback(new Error('请输入'));
             } else {
-                const newList = flattenTree(this.componentList);
+                const newList = flattenTree(this.localComponentList);
                 if (
                     newList.filter(item => item.column === value).length
-                    > (this.isDialog ? 0 : 1)
+                    > (this.isSubTable ? 0 : 1)
                 ) {
                     callback(new Error('字段名称Key只能唯一'));
                 }
@@ -235,6 +269,7 @@ export default {
                 column: '',
                 columnName: '',
                 columnType: '',
+                sort: 0,
                 dataLink: '',
                 columnDatas: '',
                 point: 0,
@@ -251,17 +286,19 @@ export default {
                 ],
                 columnName: [{ required: true, message: '请输入' }],
                 columnType: [{ required: true, message: '请选择' }],
+                sort: [{ required: true, message: '请输入' }],
                 point: [{ required: true, message: '请选择' }],
                 placeholder: [{ required: true, message: '请选择' }]
             },
             columnTypeOptions: [],
-            formProps: {},
-            editorItem: {}
+            formProps: { },
+            editorItem: {},
+            localComponentList: []
         };
     },
     computed: {
         columnTypeOptionsCom() {
-            if (this.isDialog) {
+            if (this.isSubTable) {
                 return this.columnTypeOptions.filter(
                     item => item.code !== COLUMNTYPE.SUBTABLE
                 );
@@ -269,18 +306,31 @@ export default {
             return this.columnTypeOptions;
         }
     },
+    watch: {
+        componentList: {
+            deep: true,
+            immediate: true,
+            handler(val) {
+                if (val) {
+                    this.localComponentList = val;
+                }
+            }
+        },
+    },
 
     async mounted() {
         const { data } = await getColumnTypeHttp();
         this.columnTypeOptions = data.data;
     },
     methods: {
+
         setData(row = {}) {
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
             this.formProps = {
                 ...formDefaults(this.editorItem.columnType),
-                ...(props || {})
+                ...(props || {}),
+
             };
             delete row.props;
             this.formData = row;
@@ -290,6 +340,7 @@ export default {
                 column: '',
                 columnName: '',
                 columnType: '',
+                sort: 0,
                 dataLink: '',
                 columnDatas: '',
                 point: 0,
@@ -312,15 +363,33 @@ export default {
                 ...this.formData
             };
         },
-        handelSubTableChange() {
+        handelSubTableChange(column, formData = {}) {
+            const findex = this.localComponentList.findIndex(item => item.column === column);
+            if (findex !== -1) {
+                const currentChildren = this.localComponentList[findex].children || [];
+                const newChildren = [
+                    ...currentChildren.slice(0, formData.sort),
+                    formData,
+                    ...currentChildren.slice(formData.sort)
+                ];
 
+                this.$set(this.localComponentList[findex], 'children', newChildren);
+                this.editorItem = this.localComponentList[findex];
+            }
         },
         handelColumnTypeChange() {
             this.formProps = {
-                ...formDefaults(this.formData.columnType)
+                ...formDefaults(this.formData.columnType),
+                fixed: this.isSubTable ? false : undefined
             };
         },
         handelColumnChange() {
+            this.$emit('change', {
+                formProps: this.formProps,
+                formData: this.formData
+            });
+        },
+        handelSave() {
             this.$emit('change', {
                 formProps: this.formProps,
                 formData: this.formData
