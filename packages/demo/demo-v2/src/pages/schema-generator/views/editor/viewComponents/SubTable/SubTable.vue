@@ -72,7 +72,7 @@
             </el-table-column>
         </el-table>
         <el-dialog
-            :title="subItemAid ? '修改' : '新增'"
+            :title="typeof subItemIndex === 'number' ? '修改' : '新增'"
             top="5vh"
             width="30%"
             center
@@ -112,6 +112,8 @@
 </template>
 
 <script>
+import { deepCopy } from '../../common/utils';
+
 const ViewComponents = () => import('../genSchema.vue');
 
 export default {
@@ -126,39 +128,42 @@ export default {
         componentList: {
             type: Array,
             default: () => []
-        },
+        }
     },
     data() {
         return {
             visible: false,
-            subItemAid: null
+            subItemIndex: null
         };
     },
     methods: {
         handelAdd() {
             this.visible = true;
         },
-        handelDelete(index) {
-            this.$confirm('是否确认删除此字段?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
+        handelEdit(row, index) {
+            const loaclRow = deepCopy(row);
+            this.visible = true;
+            this.subItemIndex = index;
+            this.$nextTick(() => {
+                this.$refs.viewComponentsRef.setData({
+                    ...loaclRow,
+                    props: typeof loaclRow.props === 'string' ? JSON.parse(loaclRow.props) : loaclRow.props
                 });
             });
+        },
+        handelDelete(index) {
+            this.$emit('delete', this.editorItem.column, index);
         },
         handelSave() {
             const valid = this.$refs.viewComponentsRef.checkForm();
             const formData = this.$refs.viewComponentsRef.getFormData();
             if (valid) {
-                this.$emit('change', this.editorItem.column, formData);
+                this.$emit('change', this.editorItem.column, { ...formData, parentColumn: this.editorItem.column }, this.subItemIndex);
                 this.visible = false;
             }
         },
         handelClose() {
+            this.subItemIndex = null;
             this.$refs.viewComponentsRef.reset();
         }
     }

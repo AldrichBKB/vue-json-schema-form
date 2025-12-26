@@ -58,6 +58,7 @@
                                 ref="viewComponentsRef"
                                 :component-list="componentList"
                                 @change="handelColumnChange"
+                                @save="handelColumnSave"
                             />
                         </el-tab-pane>
                     </el-tabs>
@@ -162,6 +163,10 @@ export default {
     },
 
     methods: {
+        handelColumnSave() {
+            console.log(this.componentList, 'handelColumnSave');
+
+        },
         handelColumnChange(columnInfo) {
             const { formData, formProps } = columnInfo;
             this.componentList.forEach((item, index) => {

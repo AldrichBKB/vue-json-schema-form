@@ -197,16 +197,17 @@
                 :editor-item="editorItem"
                 :component-list="localComponentList"
                 @change="handelSubTableChange"
+                @delete="handelSubTableDelete"
             />
         </div>
         <div
-            v-if="editorItem && Object.keys(editorItem).length"
+            v-if="!isSubTable"
             class="schema_footer"
         >
             <el-button
                 size="small"
                 type="primary"
-                @click="handelSave"
+                @click="$emit('save')"
             >
                 确 认
             </el-button>
@@ -229,6 +230,7 @@ const ComponentUpload = () => import('./Upload/Upload.vue');
 const ComponentSubTable = () => import('./SubTable/SubTable.vue');
 
 export default {
+    name: 'ViewComponents',
     components: {
         ComponentInput,
         ComponentInputNumber,
@@ -333,7 +335,7 @@ export default {
 
             };
             delete row.props;
-            this.formData = row;
+            this.formData = deepCopy(row);
         },
         reset() {
             this.formData = {
@@ -363,19 +365,48 @@ export default {
                 ...this.formData
             };
         },
-        handelSubTableChange(column, formData = {}) {
+        handelSubTableChange(column, formData = {}, subItemIndex) {
             const findex = this.localComponentList.findIndex(item => item.column === column);
             if (findex !== -1) {
-                const currentChildren = this.localComponentList[findex].children || [];
-                const newChildren = [
-                    ...currentChildren.slice(0, formData.sort),
-                    formData,
-                    ...currentChildren.slice(formData.sort)
-                ];
+                // 子表修改
+                if (typeof subItemIndex === 'number') {
+                    this.$set(this.localComponentList[findex].children, subItemIndex, formData);
+                    this.editorItem = this.localComponentList[findex];
+                } else {
+                    const currentChildren = this.localComponentList[findex].children || [];
+                    const newChildren = [
+                        ...currentChildren.slice(0, formData.sort),
+                        formData,
+                        ...currentChildren.slice(formData.sort)
+                    ];
 
-                this.$set(this.localComponentList[findex], 'children', newChildren);
-                this.editorItem = this.localComponentList[findex];
+                    this.$set(this.localComponentList[findex], 'children', newChildren);
+                    this.editorItem = this.localComponentList[findex];
+                }
+                this.$emit('change', {
+                    formProps: this.localComponentList[findex].props || '',
+                    formData: this.localComponentList[findex]
+                });
             }
+        },
+        handelSubTableDelete(column, index) {
+            this.$confirm('是否确认删除此字段?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+
+                const findex = this.localComponentList.findIndex(item => item.column === column);
+                if (findex !== -1) {
+                    this.localComponentList[findex].children.splice(index, 1);
+                    this.editorItem = this.localComponentList[findex];
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }
+            });
+
         },
         handelColumnTypeChange() {
             this.formProps = {
@@ -389,12 +420,7 @@ export default {
                 formData: this.formData
             });
         },
-        handelSave() {
-            this.$emit('change', {
-                formProps: this.formProps,
-                formData: this.formData
-            });
-        }
+
     }
 };
 </script>
