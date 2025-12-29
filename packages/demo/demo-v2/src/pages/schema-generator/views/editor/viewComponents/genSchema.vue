@@ -1,5 +1,5 @@
 <template>
-    <div :style="{ height: isSubTable ? 'auto' : 'calc(100vh - 74px)' }">
+    <div :style="{ height: isDialog ? 'auto' : 'calc(100vh - 74px)' }">
         <div class="schema-content">
             <div class="sub_title">基础配置</div>
             <el-form
@@ -77,7 +77,7 @@
                         @change="handelColumnChange"
                     />
                 </el-form-item>
-                <div v-if="isSubTable">
+                <div v-if="isDialog">
                     <el-form-item
                         label="字段顺序"
                         prop="sort"
@@ -201,7 +201,7 @@
             />
         </div>
         <div
-            v-if="!isSubTable"
+            v-if="!isDialog"
             class="schema_footer"
         >
             <el-button
@@ -242,6 +242,10 @@ export default {
     },
     props: {
         isSubTable: {
+            type: Boolean,
+            default: () => false
+        },
+        isDialog: {
             type: Boolean,
             default: () => false
         },

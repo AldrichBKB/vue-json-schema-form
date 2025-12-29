@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { getColumnPageHttp } from '@/api/common';
+import { getColumnPageHttp, editColumnHttp } from '@/api/common';
 import { deepCopy } from './common/utils';
 
 import NestedEditor from './components/NestedEditor.vue';
@@ -163,8 +163,24 @@ export default {
     },
 
     methods: {
-        handelColumnSave() {
-            console.log(this.componentList, 'handelColumnSave');
+        async handelColumnSave() {
+            this.loading = true;
+            try {
+                let newComponentList = this.componentList;
+                newComponentList = newComponentList.map((item, index) => ({
+                    ...item,
+                    sort: index + 1
+                }));
+                const { data } = await editColumnHttp({ formCode: 'FORM_SCM_BOM_ADD', content: newComponentList });
+                if (data.code === 200) {
+                    this.$message.success('流程保存成功');
+                } else {
+                    this.$message.error(data.msg);
+                }
+
+            } finally {
+                this.loading = false;
+            }
 
         },
         handelColumnChange(columnInfo) {

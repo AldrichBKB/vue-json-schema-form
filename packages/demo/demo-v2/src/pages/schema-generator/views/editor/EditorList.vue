@@ -1,10 +1,18 @@
 <template>
     <div>
+        <el-button
+            class="add_btn"
+            type="primary"
+            size="mini"
+            @click="visible = true"
+        >
+            新 增
+        </el-button>
         <el-table
             :data="componentList"
             stripe
             row-key="column"
-            height="98vh"
+            height="93vh"
             style="width: 100%"
         >
             <el-table-column
@@ -33,11 +41,11 @@
                 label="操作"
                 align="center"
             >
-                <template slot-scope="{ row,$index }">
+                <template slot-scope="{ row, $index }">
                     <el-button
                         type="text"
                         size="small"
-                        @click="handelEdit(row,$index)"
+                        @click="handelEdit(row, $index)"
                     >
                         编辑
                     </el-button>
@@ -52,13 +60,54 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-dialog
+            :title="typeof subItemIndex === 'number' ? '修改' : '新增'"
+            top="5vh"
+            width="30%"
+            center
+            append-to-body
+            :visible="visible"
+            @close="handelClose"
+        >
+            <div
+                :style="{
+                    maxHeight: '70vh',
+                    overflowY: 'auto'
+                }"
+            >
+                <ViewComponents
+                    ref="viewComponentsRef"
+                    :component-list="componentList"
+                    is-dialog
+                />
+            </div>
+            <div slot="footer">
+                <el-button
+                    size="mini"
+                    @click="visible = false"
+                >
+                    取 消
+                </el-button>
+                <el-button
+                    type="primary"
+                    size="mini"
+                    @click="handelSave"
+                >
+                    确 定
+                </el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import emitter from '../../mixins/emitter.js';
+import ViewComponents from './viewComponents/genSchema';
 
 export default {
+    components: {
+        ViewComponents
+    },
     mixins: [emitter],
     props: {
         componentList: {
@@ -66,7 +115,15 @@ export default {
             default: () => []
         }
     },
+    data() {
+        return {
+            visible: false
+        };
+    },
     methods: {
+        handelClose() {
+            this.$refs.viewComponentsRef.reset();
+        },
         handelEdit(editorItem, index) {
             this.dispatch('Editor', 'onSetCurEditorItem', {
                 editorItem,
@@ -79,4 +136,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.add_btn {
+    float: right;
+    margin-bottom: 20px;
+    margin-right: 10px;
+}
+</style>

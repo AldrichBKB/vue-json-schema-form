@@ -14,7 +14,7 @@
                 :style="{ marginBottom: '20px' }"
                 size="mini"
                 type="primary"
-                @click="handelAdd"
+                @click="visible = true"
             >
                 新 增
             </el-button>
@@ -90,6 +90,7 @@
                     ref="viewComponentsRef"
                     :component-list="componentList"
                     is-sub-table
+                    is-dialog
                 />
             </div>
             <div slot="footer">
@@ -137,9 +138,6 @@ export default {
         };
     },
     methods: {
-        handelAdd() {
-            this.visible = true;
-        },
         handelEdit(row, index) {
             const loaclRow = deepCopy(row);
             this.visible = true;
@@ -147,7 +145,10 @@ export default {
             this.$nextTick(() => {
                 this.$refs.viewComponentsRef.setData({
                     ...loaclRow,
-                    props: typeof loaclRow.props === 'string' ? JSON.parse(loaclRow.props) : loaclRow.props
+                    props:
+                        typeof loaclRow.props === 'string'
+                            ? JSON.parse(loaclRow.props)
+                            : loaclRow.props
                 });
             });
         },
@@ -158,7 +159,12 @@ export default {
             const valid = this.$refs.viewComponentsRef.checkForm();
             const formData = this.$refs.viewComponentsRef.getFormData();
             if (valid) {
-                this.$emit('change', this.editorItem.column, { ...formData, parentColumn: this.editorItem.column }, this.subItemIndex);
+                this.$emit(
+                    'change',
+                    this.editorItem.column,
+                    { ...formData, parentColumn: this.editorItem.column },
+                    this.subItemIndex
+                );
                 this.visible = false;
             }
         },

@@ -11,7 +11,7 @@ axios.interceptors.request.use(
         const rnd = Math.floor(Math.random() * 1000000000);
 
         // let token = sessionStorage.token;
-        let token = '843fbe40190288840600a697832633d7';
+        let token = '7e7e3ed1e08046ca592f8570af49f566';
 
         config.headers.token = token;
         const menuId = sessionStorage.menuId;
@@ -67,9 +67,17 @@ axios.interceptors.response.use(
     }
 );
 
-export function getColumnPageHttp(data) {
+export function getColumnPageHttp(params) {
     return axios({
         url: '/platform-manage-flow-api/api/form/setting/column/list',
+        params,
+        method: 'get',
+    });
+}
+
+export function editColumnHttp(data) {
+    return axios({
+        url: '/platform-manage-flow-api/api/form/setting/column/edit',
         data,
         method: 'post',
         headers: { 'Content-Type': 'application/json' }
