@@ -44,7 +44,8 @@ export function formDefaults(columnType) {
             type: 'textarea',
             maxlength: 500,
             prefix: '',
-            suffix: ''
+            suffix: '',
+            jumpPathBtnName: '详情'
         };
     }
     if (columnType === COLUMNTYPE.NUMBER) {

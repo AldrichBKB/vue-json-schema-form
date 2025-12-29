@@ -37,6 +37,18 @@
             >
                 <el-input v-model="value.suffix"></el-input>
             </el-form-item>
+            <el-form-item
+                label="跳转地址"
+                prop="jumpPath"
+            >
+                <el-input v-model="value.jumpPath"></el-input>
+            </el-form-item>
+            <el-form-item
+                label="跳转按钮名称"
+                prop="jumpPathBtnName"
+            >
+                <el-input v-model="value.jumpPathBtnName"></el-input>
+            </el-form-item>
         </el-form>
     </div>
 </template>
