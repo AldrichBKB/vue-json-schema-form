@@ -124,6 +124,14 @@ export default {
         handelClose() {
             this.$refs.viewComponentsRef.reset();
         },
+        handelSave() {
+            const valid = this.$refs.viewComponentsRef.checkForm();
+            const formData = this.$refs.viewComponentsRef.getFormData();
+            if (valid) {
+                this.$emit('add', { ...formData, children: [] });
+                this.visible = false;
+            }
+        },
         handelEdit(editorItem, index) {
             this.dispatch('Editor', 'onSetCurEditorItem', {
                 editorItem,
@@ -131,7 +139,9 @@ export default {
                 isEditorList: true
             });
         },
-        handelDelete() {}
+        handelDelete(row) {
+            this.$emit('delete', row);
+        }
     }
 };
 </script>

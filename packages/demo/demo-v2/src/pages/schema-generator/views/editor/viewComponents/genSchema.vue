@@ -84,7 +84,7 @@
                     >
                         <el-input-number
                             v-model="formData.sort"
-                            :min="0"
+                            :min="1"
                             :precision="0"
                         />
                     </el-form-item>
@@ -297,8 +297,8 @@ export default {
                 placeholder: [{ required: true, message: '请选择' }]
             },
             columnTypeOptions: [],
-            formProps: { },
-            editorItem: {},
+            formProps: {},
+            editorItem: { children: [] },
             localComponentList: []
         };
     },
@@ -379,9 +379,9 @@ export default {
                 } else {
                     const currentChildren = this.localComponentList[findex].children || [];
                     const newChildren = [
-                        ...currentChildren.slice(0, formData.sort),
+                        ...currentChildren.slice(0, formData.sort - 1),
                         formData,
-                        ...currentChildren.slice(formData.sort)
+                        ...currentChildren.slice(formData.sort - 1)
                     ];
 
                     this.$set(this.localComponentList[findex], 'children', newChildren);
@@ -399,7 +399,6 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-
                 const findex = this.localComponentList.findIndex(item => item.column === column);
                 if (findex !== -1) {
                     this.localComponentList[findex].children.splice(index, 1);
@@ -410,7 +409,6 @@ export default {
                     });
                 }
             });
-
         },
         handelColumnTypeChange() {
             this.formProps = {

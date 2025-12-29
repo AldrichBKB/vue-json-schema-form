@@ -9,7 +9,11 @@
             >
                 <div :class="$style.toolBarWrap">
                     <div :class="$style.toolsBar">
-                        <EditorList :component-list="componentList" />
+                        <EditorList
+                            :component-list="componentList"
+                            @add="handelColumnAdd"
+                            @delete="handelColumnDelete"
+                        />
                     </div>
                     <span
                         :class="$style.leftCaret"
@@ -163,17 +167,17 @@ export default {
     },
 
     methods: {
-        async handelColumnSave() {
+        async handelColumnSave(msg = '流程保存成功') {
             this.loading = true;
             try {
                 let newComponentList = this.componentList;
                 newComponentList = newComponentList.map((item, index) => ({
                     ...item,
-                    sort: index + 1
+                    sort: index
                 }));
                 const { data } = await editColumnHttp({ formCode: 'FORM_SCM_BOM_ADD', content: newComponentList });
                 if (data.code === 200) {
-                    this.$message.success('流程保存成功');
+                    this.$message.success(msg);
                 } else {
                     this.$message.error(data.msg);
                 }
@@ -181,7 +185,27 @@ export default {
             } finally {
                 this.loading = false;
             }
-
+        },
+        handelColumnAdd(columnInfo) {
+            const currentList = deepCopy(this.componentList);
+            const newList = [
+                ...currentList.slice(0, columnInfo.sort - 1),
+                columnInfo,
+                ...currentList.slice(columnInfo.sort - 1)
+            ];
+            this.componentList = newList;
+            this.handelColumnSave();
+        },
+        handelColumnDelete(columnInfo) {
+            this.$confirm('是否确认删除此字段?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const findex = this.componentList.findIndex(item => item.column === columnInfo.column);
+                this.componentList.splice(findex, 1);
+                this.handelColumnSave('字段删除成功');
+            });
         },
         handelColumnChange(columnInfo) {
             const { formData, formProps } = columnInfo;
