@@ -32,7 +32,9 @@ export const COLUMNTYPE = {
     // 月份
     MONTH: 'month',
     // 跳转详情
-    HYPERTEXT: 'hypertext'
+    HYPERTEXT: 'hypertext',
+    // 提示
+    ALERT: 'alert'
 };
 
 

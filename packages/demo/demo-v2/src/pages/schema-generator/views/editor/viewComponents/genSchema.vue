@@ -199,6 +199,10 @@
                 @change="handelSubTableChange"
                 @delete="handelSubTableDelete"
             />
+            <ComponentAlert
+                v-if="formData.columnType === COLUMNTYPE.ALERT"
+                v-model="formProps"
+            />
         </div>
         <div
             v-if="!isDialog"
@@ -228,6 +232,7 @@ const ComponentCascader = () => import('./Cascader/Cascader.vue');
 const ComponentDatePicker = () => import('./DatePicker/DatePicker.vue');
 const ComponentUpload = () => import('./Upload/Upload.vue');
 const ComponentSubTable = () => import('./SubTable/SubTable.vue');
+const ComponentAlert = () => import('./Alert/Alert.vue');
 
 export default {
     name: 'ViewComponents',
@@ -238,7 +243,8 @@ export default {
         ComponentCascader,
         ComponentDatePicker,
         ComponentUpload,
-        ComponentSubTable
+        ComponentSubTable,
+        ComponentAlert
     },
     props: {
         isSubTable: {

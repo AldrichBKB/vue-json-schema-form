@@ -71,6 +71,12 @@
                         点击上传
                     </el-button>
                 </el-upload>
+                <el-alert
+                    v-if="editorItem.columnType === COLUMNTYPE.ALERT"
+                    show-icon
+                    :closable="false"
+                    v-bind="attrs"
+                />
             </el-form-item>
         </el-form>
 
@@ -91,7 +97,7 @@
                 :prop="sitem.column"
                 :label="sitem.columnName"
                 :width="columnPropsCom(sitem.props).width || 240"
-                :fixed="columnPropsCom(sitem.props).fixed "
+                :fixed="columnPropsCom(sitem.props).fixed"
             >
                 <template slot-scope="{ row }">
                     <el-input
@@ -210,18 +216,15 @@ export default {
             return val => (val ? JSON.parse(val) : {});
         },
         columnSort() {
-            return arr => (
-                Object.entries(arr)
-                    .map(([key, value]) => ({ key, ...value }))
-                    .sort((a, b) => a.sort - b.sort) || []
-            );
-        },
+            return arr => Object.entries(arr)
+                .map(([key, value]) => ({ key, ...value }))
+                .sort((a, b) => a.sort - b.sort) || [];
+        }
     },
     beforeDestroy() {
         this.hideEditForm();
     },
     methods: {
-
         syncScroll() {
             // 获取主表格的滚动容器
             const mainBodyWrapper = this.$refs.tableRef.$el.querySelector(
@@ -388,5 +391,13 @@ export default {
 .el-cascader,
 .el-date-editor {
     width: 100% !important;
+}
+.el-alert .el-alert__icon {
+    font-size: 16px;
+    width: 16px;
+}
+.el-alert .el-alert__description {
+    margin: 0;
+    line-height: normal;
 }
 </style>

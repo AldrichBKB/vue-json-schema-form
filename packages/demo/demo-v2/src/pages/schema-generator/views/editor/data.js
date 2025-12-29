@@ -88,6 +88,11 @@ export function formDefaults(columnType) {
             accept: '.jpeg,.jpg,.png,.bmp,.tiff,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.zip,.7z,.rar'
         };
     }
+    if (columnType === COLUMNTYPE.ALERT) {
+        return {
+            type: 'warning',
+        };
+    }
     return {};
 
 }
