@@ -18,7 +18,10 @@
                 label="类型"
                 prop="type"
             >
-                <el-select v-model="value.type">
+                <el-select
+                    v-model="value.type"
+                    @change="handelTypeChange"
+                >
                     <el-option
                         v-for="item in typeOptions"
                         :key="item.value"
@@ -61,21 +64,25 @@ export default {
                     value: 'year',
                 },
                 {
-                    label: '日期范围',
-                    value: 'daterange',
-                },
-                {
                     label: '日期时间',
                     value: 'datetime',
-                },
-                {
-                    label: '日期时间范围',
-                    value: 'datetimerange',
                 },
             ]
         };
     },
-
+    methods: {
+        handelTypeChange(type) {
+            if (type === 'date') {
+                this.value['value-format'] = 'yyyy-MM-dd';
+            } else if (type === 'month') {
+                this.value['value-format'] = 'yyyy-MM';
+            } else if (type === 'year') {
+                this.value['value-format'] = 'yyyy';
+            } else if (type === 'datetime') {
+                this.value['value-format'] = 'yyyy-MM-dd HH:mm:ss';
+            }
+        }
+    },
 };
 </script>
 

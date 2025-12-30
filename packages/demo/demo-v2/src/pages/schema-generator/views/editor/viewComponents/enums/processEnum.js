@@ -3,8 +3,6 @@ export const COLUMNTYPE = {
     INPUT: 'input',
     // 日期
     DATE: 'date',
-    // 日期选择
-    DATEPICKER: 'datePicker',
     //  数字
     NUMBER: 'number',
     // 单选框
@@ -25,12 +23,8 @@ export const COLUMNTYPE = {
     CASCADER: 'cascader',
     // 开关
     SWITCH: 'switch',
-    // 日期时间选择器
-    DATETIMEPICKER: 'dateTimePicker',
     // 部门
     DEPARTMENT: 'department',
-    // 月份
-    MONTH: 'month',
     // 跳转详情
     HYPERTEXT: 'hypertext',
     // 提示

@@ -93,6 +93,8 @@ export function formDefaults(columnType) {
     if (columnType === COLUMNTYPE.ALERT) {
         return {
             type: 'warning',
+            closable: false,
+            showIcon: true
         };
     }
     if (columnType === COLUMNTYPE.SUBTABLE) {

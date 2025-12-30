@@ -11,7 +11,7 @@ axios.interceptors.request.use(
         const rnd = Math.floor(Math.random() * 1000000000);
 
         // let token = sessionStorage.token;
-        let token = '7e7e3ed1e08046ca592f8570af49f566';
+        let token = '843fbe40190288840600a697832633d7';
 
         config.headers.token = token;
         const menuId = sessionStorage.menuId;

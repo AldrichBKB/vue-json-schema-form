@@ -175,7 +175,7 @@ export default {
                     ...item,
                     sort: index
                 }));
-                const { data } = await editColumnHttp({ formCode: 'FORM_SCM_BOM_ADD', content: newComponentList });
+                const { data } = await editColumnHttp({ formCode: 'FORM_PROJECT_INTERNAL_ACCEPTANCE', content: newComponentList });
                 if (data.code === 200) {
                     this.$message.success(msg);
                 } else {
@@ -222,9 +222,10 @@ export default {
             this.loading = true;
             try {
                 const { data } = await getColumnPageHttp({
-                    // formCode: 'FORM_WORK_ORDER_ADD',
+                    // formCode: 'FORM_PROJECT_INTERNAL_ACCEPTANCE',
                     // formCode: 'FORM_SALES_ORDER_ADD',
-                    formCode: 'FORM_SCM_BOM_ADD',
+                    // formCode: 'FORM_SCM_BOM_ADD',
+                    formCode: 'FORM_PROJECT_INTERNAL_ACCEPTANCE',
                     pageDto: { page: 1, pageSize: 999 }
                 });
 
