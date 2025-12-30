@@ -79,14 +79,12 @@
                 />
             </el-form-item>
         </el-form>
-
         <el-table
             v-if="editorItem.columnType === COLUMNTYPE.SUBTABLE"
             ref="tableRef"
             :data="[{}]"
             stripe
             default-expand-all
-            v-bind="attrs"
             @row-drag-start="syncScroll"
             @row-drag-end="syncScroll"
         >
@@ -104,7 +102,7 @@
                         v-if="sitem.columnType === COLUMNTYPE.INPUT"
                         v-model="row[sitem.column]"
                         size="small"
-                        v-bind="attrs"
+                        v-bind="columnPropsCom(sitem.props)"
                         autosize
                     >
                     </el-input>
@@ -112,7 +110,7 @@
                         v-if="sitem.columnType === COLUMNTYPE.NUMBER"
                         v-model="row[sitem.column]"
                         size="small"
-                        v-bind="attrs"
+                        v-bind="columnPropsCom(sitem.props)"
                         autosize
                     >
                     </el-input-number>
@@ -124,25 +122,24 @@
                         "
                         v-model="row[sitem.column]"
                         size="small"
-                        v-bind="attrs"
                     >
                     </el-select>
                     <el-cascader
                         v-if="sitem.columnType === COLUMNTYPE.CASCADER"
                         v-model="row[sitem.column]"
                         size="small"
-                        v-bind="attrs"
+                        v-bind="columnPropsCom(sitem.props)"
                     />
                     <el-date-picker
                         v-if="sitem.columnType === COLUMNTYPE.DATE"
                         v-model="row[sitem.column]"
-                        v-bind="attrs"
+                        v-bind="columnPropsCom(sitem.props)"
                     />
                     <el-upload
                         v-if="sitem.columnType === COLUMNTYPE.ATTACHMENT"
                         v-model="row[sitem.column]"
                         size="small"
-                        v-bind="attrs"
+                        v-bind="columnPropsCom(sitem.props)"
                     >
                         <el-button
                             size="small"

@@ -54,6 +54,15 @@
                 <el-input v-model="value.suffix"></el-input>
             </el-form-item>
             <el-form-item
+                label="是否显示加减按钮"
+                prop="controls"
+            >
+                <el-radio-group v-model="value.controls">
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item
                 label="是否是金额"
                 prop="isAmount"
             >

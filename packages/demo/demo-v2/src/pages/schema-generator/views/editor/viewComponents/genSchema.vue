@@ -77,13 +77,23 @@
                         @change="handelColumnChange"
                     />
                 </el-form-item>
-                <div v-if="isDialog">
+                <div v-if="isSubTable">
                     <el-form-item
                         label="字段顺序"
                         prop="sort"
                     >
                         <el-input-number
                             v-model="formData.sort"
+                            :min="1"
+                            :precision="0"
+                        />
+                    </el-form-item>
+                    <el-form-item
+                        label="字段宽度"
+                        prop="width"
+                    >
+                        <el-input-number
+                            v-model="formProps.width"
                             :min="1"
                             :precision="0"
                         />
@@ -111,7 +121,7 @@
                         </el-select>
                     </el-form-item>
                 </div>
-                <div v-else>
+                <div v-if="!isDialog">
                     <el-form-item
                         label="是否是主要内容"
                         prop="point"
@@ -211,7 +221,7 @@
             <el-button
                 size="small"
                 type="primary"
-                @click="$emit('save')"
+                @click="handelColumnSave"
             >
                 确 认
             </el-button>
@@ -268,7 +278,7 @@ export default {
                 const newList = flattenTree(this.localComponentList);
                 if (
                     newList.filter(item => item.column === value).length
-                    > (this.isSubTable ? 0 : 1)
+                    > (this.isSubTable ? 1 : 0)
                 ) {
                     callback(new Error('字段名称Key只能唯一'));
                 }
@@ -303,7 +313,10 @@ export default {
                 placeholder: [{ required: true, message: '请选择' }]
             },
             columnTypeOptions: [],
-            formProps: {},
+            formProps: {
+                fixed: this.isSubTable ? false : undefined,
+                width: this.isSubTable ? 100 : undefined,
+            },
             editorItem: { children: [] },
             localComponentList: []
         };
@@ -340,9 +353,10 @@ export default {
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
             this.formProps = {
+                fixed: this.isSubTable ? false : undefined,
+                width: this.isSubTable ? 100 : undefined,
                 ...formDefaults(this.editorItem.columnType),
                 ...(props || {}),
-
             };
             delete row.props;
             this.formData = deepCopy(row);
@@ -397,6 +411,7 @@ export default {
                     formProps: this.localComponentList[findex].props || '',
                     formData: this.localComponentList[findex]
                 });
+                this.$emit('save');
             }
         },
         handelSubTableDelete(column, index) {
@@ -419,7 +434,8 @@ export default {
         handelColumnTypeChange() {
             this.formProps = {
                 ...formDefaults(this.formData.columnType),
-                fixed: this.isSubTable ? false : undefined
+                fixed: this.isSubTable ? false : undefined,
+                width: this.isSubTable ? 100 : undefined,
             };
         },
         handelColumnChange() {
@@ -428,7 +444,13 @@ export default {
                 formData: this.formData
             });
         },
-
+        handelColumnSave() {
+            this.$emit('change', {
+                formProps: this.formProps,
+                formData: this.formData
+            });
+            this.$emit('save');
+        }
     }
 };
 </script>

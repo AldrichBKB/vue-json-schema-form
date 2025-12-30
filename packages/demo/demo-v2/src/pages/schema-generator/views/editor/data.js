@@ -56,6 +56,7 @@ export function formDefaults(columnType) {
             precision: 0,
             prefix: '',
             suffix: '',
+            controls: false,
             isAmount: false
         };
     }
