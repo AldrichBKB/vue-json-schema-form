@@ -95,6 +95,12 @@ export function formDefaults(columnType) {
             type: 'warning',
         };
     }
+    if (columnType === COLUMNTYPE.SUBTABLE) {
+        return {
+            height: undefined,
+            rowKey: 'treeId'
+        };
+    }
     return {};
 
 }

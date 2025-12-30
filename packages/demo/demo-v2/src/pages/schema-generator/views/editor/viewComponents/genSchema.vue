@@ -204,6 +204,7 @@
             />
             <ComponentSubTable
                 v-if="formData.columnType === COLUMNTYPE.SUBTABLE"
+                v-model="formProps"
                 :editor-item="editorItem"
                 :component-list="localComponentList"
                 @change="handelSubTableChange"

@@ -75,7 +75,6 @@
 <script>
 import { getColumnPageHttp, editColumnHttp } from '@/api/common';
 import { deepCopy } from './common/utils';
-import { COLUMNTYPE } from './viewComponents/enums/processEnum';
 
 import NestedEditor from './components/NestedEditor.vue';
 import ViewComponents from './viewComponents/genSchema.vue';
@@ -214,7 +213,7 @@ export default {
                 if (formData && formData.column === item.column) {
                     this.$set(this.componentList, index, {
                         ...formData,
-                        props: item.columnType !== COLUMNTYPE.SUBTABLE ? JSON.stringify(formProps) : undefined
+                        props: JSON.stringify(formProps)
                     });
                 }
             });

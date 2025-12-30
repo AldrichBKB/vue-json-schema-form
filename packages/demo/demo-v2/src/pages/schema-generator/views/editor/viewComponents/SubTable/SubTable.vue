@@ -20,6 +20,30 @@
             </el-button>
         </div>
 
+        <el-form
+            ref="formRef"
+            size="small"
+            label-suffix=":"
+            :model="value"
+            label-width="auto"
+        >
+            <el-form-item
+                label="子表高度"
+                prop="height"
+            >
+                <el-input-number
+                    v-model="value.height"
+                    :precision="0"
+                />
+            </el-form-item>
+            <el-form-item
+                label="唯一键名"
+                prop="multiple"
+            >
+                <el-input v-model="value.rowKey"></el-input>
+            </el-form-item>
+        </el-form>
+
         <el-table
             :data="editorItem.children"
             stripe
@@ -129,6 +153,10 @@ export default {
         componentList: {
             type: Array,
             default: () => []
+        },
+        value: {
+            type: Object,
+            default: () => ({})
         }
     },
     data() {
