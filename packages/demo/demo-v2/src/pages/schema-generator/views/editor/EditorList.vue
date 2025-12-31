@@ -41,22 +41,24 @@
                 label="操作"
                 align="center"
             >
-                <template slot-scope="{ row, $index }">
-                    <el-button
-                        type="text"
-                        size="small"
-                        @click="handelEdit(row, $index)"
-                    >
-                        编辑
-                    </el-button>
-                    <el-button
-                        type="text"
-                        size="small"
-                        :style="{ color: '#ee0b0b', marginLeft: '8px' }"
-                        @click="handelDelete(row)"
-                    >
-                        删除
-                    </el-button>
+                <template slot-scope="{ row }">
+                    <div v-if="!row.parentColumn">
+                        <el-button
+                            type="text"
+                            size="small"
+                            @click="handelEdit(row)"
+                        >
+                            编辑
+                        </el-button>
+                        <el-button
+                            type="text"
+                            size="small"
+                            :style="{ color: '#ee0b0b', marginLeft: '8px' }"
+                            @click="handelDelete(row)"
+                        >
+                            删除
+                        </el-button>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>
@@ -132,10 +134,9 @@ export default {
                 this.visible = false;
             }
         },
-        handelEdit(editorItem, index) {
+        handelEdit(editorItem) {
             this.dispatch('Editor', 'onSetCurEditorItem', {
                 editorItem,
-                editorIndex: index,
                 isEditorList: true
             });
         },

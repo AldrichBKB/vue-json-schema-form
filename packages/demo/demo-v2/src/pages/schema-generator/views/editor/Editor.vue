@@ -138,11 +138,12 @@ export default {
         window.document.body.classList.remove('page-decorate-design');
     },
     created() {
-        this.$on('onSetCurEditorItem', ({ editorItem, isEditorList = false, editorIndex }) => {
+        this.$on('onSetCurEditorItem', ({ editorItem, isEditorList = false }) => {
             if (isEditorList) {
-                this.componentList[editorIndex].isEdit = true;
+                const findex = this.componentList.findIndex(item => item.column === editorItem.column);
+                this.componentList[findex].isEdit = true;
                 this.componentList.forEach((item, index) => {
-                    if (index !== editorIndex) {
+                    if (index !== findex) {
                         item.isEdit = false;
                     }
                 });
@@ -151,6 +152,7 @@ export default {
                     if (editorItem && editorItem.column !== item.column) {
                         item.isEdit = false;
                     }
+
                 });
             }
 
@@ -171,11 +173,20 @@ export default {
             this.loading = true;
             try {
                 let newComponentList = this.componentList;
-                newComponentList = newComponentList.map((item, index) => ({
-                    ...item,
-                    sort: index
-                }));
-                const { data } = await editColumnHttp({ formCode: 'FORM_PROJECT_INTERNAL_ACCEPTANCE', content: newComponentList });
+                newComponentList = newComponentList.map((item, index) => {
+                    let formProps = '';
+                    if (typeof item.props === 'string') {
+                        formProps = item.props;
+                    } else {
+                        formProps = JSON.stringify(item.props);
+                    }
+                    return {
+                        ...item,
+                        props: formProps,
+                        sort: index
+                    };
+                });
+                const { data } = await editColumnHttp({ formCode: 'FORM_FIN_EXPENSE_MANAGEMENT', content: newComponentList });
                 if (data.code === 200) {
                     this.$message.success(msg);
                 } else {
@@ -222,10 +233,10 @@ export default {
             this.loading = true;
             try {
                 const { data } = await getColumnPageHttp({
-                    // formCode: 'FORM_PROJECT_INTERNAL_ACCEPTANCE',
+                    // formCode: 'FORM_FIN_EXPENSE_MANAGEMENT',
                     // formCode: 'FORM_SALES_ORDER_ADD',
                     // formCode: 'FORM_SCM_BOM_ADD',
-                    formCode: 'FORM_PROJECT_INTERNAL_ACCEPTANCE',
+                    formCode: 'FORM_FIN_EXPENSE_MANAGEMENT',
                     pageDto: { page: 1, pageSize: 999 }
                 });
 
