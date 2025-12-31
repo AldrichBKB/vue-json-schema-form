@@ -75,7 +75,6 @@ export default {
         showNestedEditor(editorItem) {
             return (
                 editorItem.childList
-                && !editorItem.componentPack.viewSchema.format
             );
         },
         handleDragChange(...args) {

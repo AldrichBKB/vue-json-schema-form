@@ -316,7 +316,7 @@ export default {
             columnTypeOptions: [],
             formProps: {
                 fixed: this.isSubTable ? false : undefined,
-                width: this.isSubTable ? 100 : undefined,
+                width: this.isSubTable ? 220 : undefined,
             },
             editorItem: { children: [] },
             localComponentList: []
@@ -408,8 +408,16 @@ export default {
                     this.$set(this.localComponentList[findex], 'children', newChildren);
                     this.editorItem = this.localComponentList[findex];
                 }
+
+                let formProps = '';
+                if (typeof this.localComponentList[findex].props === 'string') {
+                    formProps = this.localComponentList[findex].props;
+                } else {
+                    formProps = JSON.stringify(this.localComponentList[findex].props);
+                }
+
                 this.$emit('change', {
-                    formProps: this.localComponentList[findex].props || '',
+                    formProps,
                     formData: this.localComponentList[findex]
                 });
                 this.$emit('save');
