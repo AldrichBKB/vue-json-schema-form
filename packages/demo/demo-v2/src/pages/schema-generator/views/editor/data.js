@@ -99,7 +99,7 @@ export function formDefaults(columnType) {
     }
     if (columnType === COLUMNTYPE.SUBTABLE) {
         return {
-            height: undefined,
+            maxHeight: undefined,
             rowKey: 'treeId'
         };
     }

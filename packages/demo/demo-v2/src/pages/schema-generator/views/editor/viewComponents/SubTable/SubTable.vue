@@ -29,10 +29,10 @@
         >
             <el-form-item
                 label="子表高度"
-                prop="height"
+                prop="maxHeight"
             >
                 <el-input-number
-                    v-model="value.height"
+                    v-model="value.maxHeight"
                     :precision="0"
                 />
             </el-form-item>
