@@ -156,13 +156,7 @@ export default {
                 });
             }
 
-            const newEditorItem = deepCopy(editorItem || {});
-            if (newEditorItem && newEditorItem.props) {
-                newEditorItem.props = typeof newEditorItem.props === 'string' ? JSON.parse(newEditorItem.props) : newEditorItem.props;
-            } else {
-                newEditorItem.props = {};
-            }
-            this.curEditorItem = newEditorItem;
+            this.curEditorItem = deepCopy(editorItem || {});
             this.$refs.viewComponentsRef.setData(this.curEditorItem);
         });
         this.getColumnPage();
@@ -173,6 +167,7 @@ export default {
             this.loading = true;
             try {
                 let newComponentList = this.componentList;
+
                 newComponentList = newComponentList.map((item, index) => {
                     let formProps = '';
                     if (typeof item.props === 'string') {
@@ -224,7 +219,7 @@ export default {
                 if (formData && formData.column === item.column) {
                     this.$set(this.componentList, index, {
                         ...formData,
-                        props: JSON.stringify(formProps)
+                        props: formProps
                     });
                 }
             });

@@ -353,11 +353,17 @@ export default {
         setData(row = {}) {
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
+            let newProps = {};
+            if (typeof props === 'object') {
+                newProps = props;
+            } else if (typeof props === 'string') {
+                newProps = JSON.parse(props);
+            }
             this.formProps = {
                 fixed: this.isSubTable ? false : undefined,
                 width: this.isSubTable ? 100 : undefined,
                 ...formDefaults(this.editorItem.columnType),
-                ...(props || {}),
+                ...newProps,
             };
             delete row.props;
             this.formData = deepCopy(row);
@@ -410,12 +416,13 @@ export default {
                 }
 
                 let formProps = '';
+
                 if (typeof this.localComponentList[findex].props === 'string') {
                     formProps = this.localComponentList[findex].props;
                 } else {
                     formProps = JSON.stringify(this.localComponentList[findex].props);
                 }
-
+                this.formData = this.localComponentList[findex];
                 this.$emit('change', {
                     formProps,
                     formData: this.localComponentList[findex]
