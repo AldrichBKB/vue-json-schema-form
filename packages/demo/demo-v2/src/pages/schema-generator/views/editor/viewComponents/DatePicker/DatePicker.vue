@@ -73,13 +73,13 @@ export default {
     methods: {
         handelTypeChange(type) {
             if (type === 'date') {
-                this.value['value-format'] = 'yyyy-MM-dd';
+                this.value['value-format'] = 'YYYY-MM-DD';
             } else if (type === 'month') {
-                this.value['value-format'] = 'yyyy-MM';
+                this.value['value-format'] = 'YYYY-MM';
             } else if (type === 'year') {
-                this.value['value-format'] = 'yyyy';
+                this.value['value-format'] = 'YYYY';
             } else if (type === 'datetime') {
-                this.value['value-format'] = 'yyyy-MM-dd HH:mm:ss';
+                this.value['value-format'] = 'YYYY-MM-DD HH:mm:ss';
             }
         }
     },
