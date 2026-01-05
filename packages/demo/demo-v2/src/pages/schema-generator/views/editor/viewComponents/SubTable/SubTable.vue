@@ -115,6 +115,7 @@
                     :component-list="componentList"
                     is-sub-table
                     is-dialog
+                    :is-edit="typeof subItemIndex === 'number'"
                 />
             </div>
             <div slot="footer">
@@ -199,6 +200,7 @@ export default {
         handelClose() {
             this.subItemIndex = null;
             this.$refs.viewComponentsRef.reset();
+            this.visible = false;
         }
     }
 };

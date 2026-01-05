@@ -81,6 +81,7 @@
                     ref="viewComponentsRef"
                     :component-list="componentList"
                     is-dialog
+                    :is-edit="typeof subItemIndex === 'number'"
                 />
             </div>
             <div slot="footer">
@@ -125,6 +126,7 @@ export default {
     methods: {
         handelClose() {
             this.$refs.viewComponentsRef.reset();
+            this.visible = false;
         },
         handelSave() {
             const valid = this.$refs.viewComponentsRef.checkForm();

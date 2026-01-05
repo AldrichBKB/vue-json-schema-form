@@ -266,6 +266,10 @@ export default {
             type: Boolean,
             default: () => false
         },
+        isEdit: {
+            type: Boolean,
+            default: () => true
+        },
         componentList: {
             type: Array,
             default: () => []
@@ -277,9 +281,9 @@ export default {
                 callback(new Error('请输入'));
             } else {
                 const newList = flattenTree(this.localComponentList);
+
                 if (
-                    newList.filter(item => item.column === value).length
-                    > (this.isSubTable ? 1 : 0)
+                    newList.filter(item => item.column === value).length > this.isEdit ? 1 : 0
                 ) {
                     callback(new Error('字段名称Key只能唯一'));
                 }
