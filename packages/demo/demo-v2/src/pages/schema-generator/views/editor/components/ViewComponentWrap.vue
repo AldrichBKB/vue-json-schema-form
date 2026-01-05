@@ -122,6 +122,7 @@
                         "
                         v-model="row[sitem.column]"
                         size="small"
+                        @focus="handleClickView"
                     >
                     </el-select>
                     <el-cascader
