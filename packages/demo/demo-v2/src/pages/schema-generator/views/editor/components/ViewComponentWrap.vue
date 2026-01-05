@@ -206,9 +206,14 @@ export default {
     },
     computed: {
         attrs() {
-            return this.editorItem && this.editorItem.props
-                ? JSON.parse(this.editorItem.props)
-                : {};
+            if (this.editorItem && this.editorItem.props) {
+                if (typeof this.editorItem.props === 'string') {
+                    return JSON.parse(this.editorItem.props);
+                }
+                return this.editorItem.props;
+
+            }
+            return {};
         },
         columnPropsCom() {
             return val => (val ? JSON.parse(val) : {});
