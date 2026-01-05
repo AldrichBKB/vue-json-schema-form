@@ -14,7 +14,7 @@
                 :style="{ marginBottom: '20px' }"
                 size="mini"
                 type="primary"
-                @click="visible = true"
+                @click="handelOpen"
             >
                 新 增
             </el-button>
@@ -196,6 +196,25 @@ export default {
                 );
                 this.visible = false;
             }
+        },
+        handelOpen() {
+            this.visible = true;
+            this.$nextTick(() => {
+                this.$refs.viewComponentsRef.setData({
+                    column: '',
+                    columnName: '',
+                    columnType: '',
+                    sort: Math.max(...this.editorItem.children.map(item => item.sort)) + 1,
+                    dataLink: '',
+                    columnDatas: '',
+                    point: 0,
+                    placeholder: 12,
+                    visibilityRule: ''
+                }, {
+                    fixed: false,
+                    width: 240,
+                });
+            });
         },
         handelClose() {
             this.subItemIndex = null;

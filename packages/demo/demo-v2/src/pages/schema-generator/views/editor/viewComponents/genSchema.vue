@@ -318,10 +318,7 @@ export default {
                 placeholder: [{ required: true, message: '请选择' }]
             },
             columnTypeOptions: [],
-            formProps: {
-                fixed: this.isSubTable ? false : undefined,
-                width: this.isSubTable ? 220 : undefined,
-            },
+            formProps: {},
             editorItem: { children: [] },
             localComponentList: []
         };
@@ -354,7 +351,8 @@ export default {
     },
     methods: {
 
-        setData(row = {}) {
+        setData(row = {}, rowProps = {}) {
+
             this.editorItem = deepCopy(row);
             const { props } = deepCopy(row);
             let newProps = {};
@@ -364,8 +362,7 @@ export default {
                 newProps = JSON.parse(props);
             }
             this.formProps = {
-                fixed: this.isSubTable ? false : undefined,
-                width: this.isSubTable ? 100 : undefined,
+                ...rowProps,
                 ...formDefaults(this.editorItem.columnType),
                 ...newProps,
             };
@@ -455,7 +452,7 @@ export default {
             this.formProps = {
                 ...formDefaults(this.formData.columnType),
                 fixed: this.isSubTable ? false : undefined,
-                width: this.isSubTable ? 100 : undefined,
+                width: this.isSubTable ? 220 : undefined,
             };
         },
         handelColumnChange() {
