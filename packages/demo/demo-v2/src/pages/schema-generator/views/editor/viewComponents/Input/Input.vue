@@ -38,6 +38,15 @@
                 <el-input v-model="value.suffix"></el-input>
             </el-form-item>
             <el-form-item
+                label="是否是金额"
+                prop="isAmount"
+            >
+                <el-radio-group v-model="value.isAmount">
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item
                 label="跳转地址"
                 prop="jumpPath"
             >

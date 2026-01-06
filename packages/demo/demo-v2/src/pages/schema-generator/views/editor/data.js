@@ -45,7 +45,8 @@ export function formDefaults(columnType) {
             maxlength: 500,
             prefix: '',
             suffix: '',
-            jumpPathBtnName: '详情'
+            jumpPathBtnName: '详情',
+            isAmount: false
         };
     }
     if (columnType === COLUMNTYPE.NUMBER) {

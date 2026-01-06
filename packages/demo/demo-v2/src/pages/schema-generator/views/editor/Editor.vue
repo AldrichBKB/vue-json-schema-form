@@ -119,14 +119,14 @@ export default {
         },
         dragOptions() {
             return {
-                animation: 300,
+                animation: 200,
                 group: 'listComponentsGroup',
                 disabled: false,
                 ghostClass: 'ghostItem',
                 filter: this.$style.disabled,
                 draggable: '.draggableItem',
                 tag: 'div',
-                swapThreshold: 0.3
+                swapThreshold: 1
             };
         }
     },
@@ -194,11 +194,8 @@ export default {
         },
         handelColumnAdd(columnInfo) {
             const currentList = deepCopy(this.componentList);
-            const newList = [
-                ...currentList.slice(0, columnInfo.sort - 1),
-                columnInfo,
-                ...currentList.slice(columnInfo.sort - 1)
-            ];
+            const newList = [...currentList, columnInfo];
+
             this.componentList = newList;
             this.handelColumnSave();
         },
